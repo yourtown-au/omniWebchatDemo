@@ -431,7 +431,7 @@
             const ctx = {
                 VisitorIP: { value: userIP || "unavailable", isDisplayable: true },
                 Referral:  { value: referrer, isDisplayable: true },
-                DeviceType: { value: deviceType, isDisplayable: true },
+                DeviceType: { value: getDeviceType(), isDisplayable: true },
                 UserAgent: { value: getFullUserAgent(), isDisplayable: true }
             };
 
