@@ -342,7 +342,7 @@
                 <div class="agent-option" onclick="selectAgent('specialist')">
                     <input type="radio" name="agent" id="agent-specialist" value="specialist">
                     <label for="agent-specialist">
-                        <div class="agent-name">Specialist Support Agent</div>
+                        <div class="agent-name">Support Agent with Gen AI</div>
                         <div class="agent-description">Specialized support for complex situations requiring expert guidance</div>
                     </label>
                 </div>
@@ -435,17 +435,15 @@
                     }
                 },
                 'specialist': {
-                    // Configuration for specialist agent
-                    // Replace these values with actual specialist agent configuration
                     id: 'Microsoft_Omnichannel_LCWidget',
                     primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
                     fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
                     attributes: {
                         'v2': '',
-                        'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994', // Replace with specialist app-id
+                        'data-app-id': '7eaac707-889b-4572-98c2-b9bb1eb80b03',
                         'data-lcw-version': 'prod',
-                        'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd', // Replace with specialist org-id
-                        'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com' // Replace with specialist org-url
+                        'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
+                        'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
                     }
                 }
             };
