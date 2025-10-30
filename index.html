@@ -414,10 +414,27 @@
         
         // Load the chat widget script
         function loadChatWidget(agentType = 'default') {
+            // Selectors for chat widget cleanup
+            const IFRAME_SELECTORS = 'iframe[id*="oc-lcw"], iframe[title*="Chat"], iframe[src*="livechatwidget"]';
+            const CONTAINER_SELECTORS = 'div[id*="oc-lcw"], div[class*="oc-lcw"]';
+            
             // Remove existing chat widget if present
             const existingScript = document.getElementById('Microsoft_Omnichannel_LCWidget');
             if (existingScript) {
                 existingScript.remove();
+            }
+            
+            // Remove all chat widget iframes and containers
+            const chatIframes = document.querySelectorAll(IFRAME_SELECTORS);
+            chatIframes.forEach(iframe => iframe.remove());
+            
+            // Remove any widget container divs
+            const chatContainers = document.querySelectorAll(CONTAINER_SELECTORS);
+            chatContainers.forEach(container => container.remove());
+            
+            // Clear the global Microsoft Omnichannel object to force re-initialization
+            if (window.Microsoft && window.Microsoft.Omnichannel && window.Microsoft.Omnichannel.LiveChatWidget) {
+                delete window.Microsoft.Omnichannel.LiveChatWidget;
             }
 
             // Configuration for different agents
