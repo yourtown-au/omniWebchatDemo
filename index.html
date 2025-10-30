@@ -419,6 +419,19 @@
             if (existingScript) {
                 existingScript.remove();
             }
+            
+            // Remove all chat widget iframes and containers
+            const chatIframes = document.querySelectorAll('iframe[id*="oc-lcw"], iframe[title*="Chat"], iframe[src*="livechatwidget"]');
+            chatIframes.forEach(iframe => iframe.remove());
+            
+            // Remove any widget container divs
+            const chatContainers = document.querySelectorAll('div[id*="oc-lcw"], div[class*="oc-lcw"]');
+            chatContainers.forEach(container => container.remove());
+            
+            // Clear the global Microsoft Omnichannel object to force re-initialization
+            if (window.Microsoft && window.Microsoft.Omnichannel && window.Microsoft.Omnichannel.LiveChatWidget) {
+                delete window.Microsoft.Omnichannel.LiveChatWidget;
+            }
 
             // Configuration for different agents
             const chatConfigs = {
