@@ -466,7 +466,7 @@
             const script = createChatScript(chatConfig.primarySrc);
             script.onerror = function(el) {
                 if (el.target.parentNode) {
-                    el.target.parentNode.removeChild(el.target);
+                    el.target.remove();
                 }
                 const fallbackScript = createChatScript(chatConfig.fallbackSrc);
                 document.body.appendChild(fallbackScript);
