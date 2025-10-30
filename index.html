@@ -190,6 +190,73 @@
             color: #0d47a1;
         }
         
+        .agent-selector {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #667eea;
+        }
+        
+        .agent-selector h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+        
+        .agent-options {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .agent-option {
+            flex: 1;
+            min-width: 200px;
+            padding: 15px;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-align: left;
+        }
+        
+        .agent-option:hover {
+            border-color: #667eea;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
+        }
+        
+        .agent-option.selected {
+            border-color: #667eea;
+            background: #f0f4ff;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+        
+        .agent-option input[type="radio"] {
+            margin-right: 10px;
+        }
+        
+        .agent-option label {
+            cursor: pointer;
+            display: block;
+        }
+        
+        .agent-option .agent-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1rem;
+        }
+        
+        .agent-option .agent-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+        }
+        
         .footer {
             margin-top: 30px;
             padding-top: 20px;
@@ -262,6 +329,26 @@
             </ul>
         </div>
         
+        <div class="agent-selector">
+            <h3>Choose Your Support Agent</h3>
+            <div class="agent-options">
+                <div class="agent-option selected" onclick="selectAgent('default')">
+                    <input type="radio" name="agent" id="agent-default" value="default" checked>
+                    <label for="agent-default">
+                        <div class="agent-name">Default Support Agent</div>
+                        <div class="agent-description">General support for all family-related queries and counselling</div>
+                    </label>
+                </div>
+                <div class="agent-option" onclick="selectAgent('specialist')">
+                    <input type="radio" name="agent" id="agent-specialist" value="specialist">
+                    <label for="agent-specialist">
+                        <div class="agent-name">Specialist Support Agent</div>
+                        <div class="agent-description">Specialized support for complex situations requiring expert guidance</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
         <div class="chat-info">
             <p><span class="status-indicator"></span><strong>Chat Available</strong></p>
             <p>Click the chat button in the bottom right corner to start a conversation.</p>
@@ -326,20 +413,44 @@
         }
         
         // Load the chat widget script
-        function loadChatWidget() {
+        function loadChatWidget(agentType = 'default') {
+            // Remove existing chat widget if present
+            const existingScript = document.getElementById('Microsoft_Omnichannel_LCWidget');
+            if (existingScript) {
+                existingScript.remove();
+            }
 
-            const chatConfig = {
-                id: 'Microsoft_Omnichannel_LCWidget',
-                primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-                fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-                attributes: {
-                    'v2': '',
-                    'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994',
-                    'data-lcw-version': 'prod',
-                    'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                    'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+            // Configuration for different agents
+            const chatConfigs = {
+                'default': {
+                    id: 'Microsoft_Omnichannel_LCWidget',
+                    primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+                    fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+                    attributes: {
+                        'v2': '',
+                        'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994',
+                        'data-lcw-version': 'prod',
+                        'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
+                        'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+                    }
+                },
+                'specialist': {
+                    // Configuration for specialist agent
+                    // Replace these values with actual specialist agent configuration
+                    id: 'Microsoft_Omnichannel_LCWidget',
+                    primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+                    fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+                    attributes: {
+                        'v2': '',
+                        'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994', // Replace with specialist app-id
+                        'data-lcw-version': 'prod',
+                        'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd', // Replace with specialist org-id
+                        'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com' // Replace with specialist org-url
+                    }
                 }
             };
+
+            const chatConfig = chatConfigs[agentType] || chatConfigs['default'];
             
             function createChatScript(src) {
                 const script = document.createElement('script');
@@ -354,18 +465,39 @@
             
             const script = createChatScript(chatConfig.primarySrc);
             script.onerror = function(el) {
-                el.target.parentNode.removeChild(el.target);
+                if (el.target.parentNode) {
+                    el.target.remove();
+                }
                 const fallbackScript = createChatScript(chatConfig.fallbackSrc);
                 document.body.appendChild(fallbackScript);
             };
             document.body.appendChild(script);
+            
+            console.log(`Chat widget loaded for agent type: ${agentType}`);
         }
         
         // Unlock the main content
         function unlockContent() {
             document.getElementById('accessOverlay').style.display = 'none';
             document.getElementById('contentWrapper').classList.add('unlocked');
-            loadChatWidget();
+            // Load with default agent initially
+            const selectedAgent = document.querySelector('input[name="agent"]:checked').value;
+            loadChatWidget(selectedAgent);
+        }
+        
+        // Select agent function
+        function selectAgent(agentType) {
+            // Update UI selection
+            document.querySelectorAll('.agent-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Update radio button
+            document.getElementById(`agent-${agentType}`).checked = true;
+            
+            // Reload chat widget with selected agent
+            loadChatWidget(agentType);
         }
 
         // Get full user agent string
