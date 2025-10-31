@@ -30,6 +30,11 @@ let visitorData = {
         
         // Try to get geolocation information from IP
         try {
+            // Validate IP format before using it
+            if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(visitorData.ip)) {
+                throw new Error("Invalid IP format");
+            }
+            
             const geoResponse = await fetch(`https://ipapi.co/${visitorData.ip}/json/`);
             const geoData = await geoResponse.json();
             
@@ -59,7 +64,7 @@ let visitorData = {
             },
             (error) => {
                 console.warn("Browser geolocation denied or unavailable:", error.message);
-                visitorData.coordinates = "Permission denied or unavailable";
+                visitorData.coordinates = "Unavailable";
                 updateVisitorDisplay();
             }
         );
@@ -71,13 +76,13 @@ let visitorData = {
     visitorData.device = getDeviceType();
     visitorData.browser = getBrowserInfo();
     
-    // Update display
+    // Update display (will be updated again when geolocation completes if available)
     updateVisitorDisplay();
 })();
 
 /**
  * Get browser information
- * @returns {string} Browser name and version
+ * @returns {string} Browser name
  */
 function getBrowserInfo() {
     const ua = navigator.userAgent;
