@@ -48,9 +48,8 @@ function unlockContent() {
     document.getElementById('accessOverlay').style.display = 'none';
     document.getElementById('contentWrapper').classList.add('unlocked');
     
-    // Load chat widget with default agent
-    const selectedAgent = document.querySelector('input[name="agent"]:checked').value;
-    loadChatWidget(selectedAgent);
+    // Initialize agent availability based on default environment (dev)
+    updateAgentAvailability();
 }
 
 /**
