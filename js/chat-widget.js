@@ -36,10 +36,10 @@ const CHAT_CONFIGS = {
             fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
             attributes: {
                 'v2': '',
-                'data-app-id': 'UAT_APP_ID_PLACEHOLDER',
+                'data-app-id': 'af764db0-8d9e-4bf8-b55b-9edfccd00bf6',
                 'data-lcw-version': 'prod',
-                'data-org-id': 'UAT_ORG_ID_PLACEHOLDER',
-                'data-org-url': 'UAT_ORG_URL_PLACEHOLDER'
+                'data-org-id': '0deaf548-7a4d-f011-be52-0022489321ca',
+                'data-org-url': 'https://m-0deaf548-7a4d-f011-be52-0022489321ca.au.omnichannelengagementhub.com'
             }
         }
     },
