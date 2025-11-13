@@ -226,6 +226,73 @@ h1 {
     color: #0d47a1;
 }
 
+.environment-selector {
+    background: #fff3e0;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border: 2px solid #ff9800;
+}
+
+.environment-selector h3 {
+    color: #e65100;
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+}
+
+.environment-options {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.environment-option {
+    flex: 1;
+    min-width: 200px;
+    padding: 15px;
+    background: white;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: left;
+}
+
+.environment-option:hover {
+    border-color: #ff9800;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(255, 152, 0, 0.2);
+}
+
+.environment-option.selected {
+    border-color: #ff9800;
+    background: #fff8e1;
+    box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.2);
+}
+
+.environment-option input[type="radio"] {
+    margin-right: 10px;
+}
+
+.environment-option label {
+    cursor: pointer;
+    display: block;
+}
+
+.environment-option .environment-name {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 5px;
+    font-size: 1.1rem;
+}
+
+.environment-option .environment-description {
+    color: #666;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
 .agent-selector {
     background: #f8f9fa;
     padding: 20px;
@@ -291,6 +358,18 @@ h1 {
     color: #666;
     font-size: 0.9rem;
     line-height: 1.4;
+}
+
+.agent-option.disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.agent-option.disabled .agent-description:after {
+    content: " (Not available in this environment)";
+    color: #d32f2f;
+    font-weight: 600;
 }
 
 .footer {

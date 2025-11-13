@@ -37,6 +37,33 @@
             </ul>
         </div>
         
+        <div class="environment-selector">
+            <h3>Choose Environment</h3>
+            <div class="environment-options">
+                <div class="environment-option selected" onclick="selectEnvironment('dev')">
+                    <input type="radio" name="environment" id="env-dev" value="dev" checked>
+                    <label for="env-dev">
+                        <div class="environment-name">Development (DEV)</div>
+                        <div class="environment-description">Development environment for testing</div>
+                    </label>
+                </div>
+                <div class="environment-option" onclick="selectEnvironment('uat')">
+                    <input type="radio" name="environment" id="env-uat" value="uat">
+                    <label for="env-uat">
+                        <div class="environment-name">User Acceptance Testing (UAT)</div>
+                        <div class="environment-description">Pre-production testing environment</div>
+                    </label>
+                </div>
+                <div class="environment-option" onclick="selectEnvironment('prd')">
+                    <input type="radio" name="environment" id="env-prd" value="prd">
+                    <label for="env-prd">
+                        <div class="environment-name">Production (PRD)</div>
+                        <div class="environment-description">Live production environment</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+        
         <div class="agent-selector">
             <h3>Choose Your Support Agent</h3>
             <div class="agent-options">

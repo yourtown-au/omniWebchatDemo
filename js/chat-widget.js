@@ -1,33 +1,71 @@
 // Chat Widget Module
 // Handles Microsoft Omnichannel LiveChat widget loading and configuration
 
-// Configuration for different chat agents
+// Configuration for different chat agents and environments
 const CHAT_CONFIGS = {
-    'default': {
-        id: 'Microsoft_Omnichannel_LCWidget',
-        primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-        fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-        attributes: {
-            'v2': '',
-            'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994',
-            'data-lcw-version': 'prod',
-            'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-            'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+    'dev': {
+        'default': {
+            id: 'Microsoft_Omnichannel_LCWidget',
+            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            attributes: {
+                'v2': '',
+                'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994',
+                'data-lcw-version': 'prod',
+                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+            }
+        },
+        'specialist': {
+            id: 'Microsoft_Omnichannel_LCWidget',
+            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            attributes: {
+                'v2': '',
+                'data-app-id': '7eaac707-889b-4572-98c2-b9bb1eb80b03',
+                'data-lcw-version': 'prod',
+                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+            }
         }
     },
-    'specialist': {
-        id: 'Microsoft_Omnichannel_LCWidget',
-        primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-        fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-        attributes: {
-            'v2': '',
-            'data-app-id': '7eaac707-889b-4572-98c2-b9bb1eb80b03',
-            'data-lcw-version': 'prod',
-            'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-            'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+    'uat': {
+        'default': {
+            id: 'Microsoft_Omnichannel_LCWidget',
+            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            attributes: {
+                'v2': '',
+                'data-app-id': 'af764db0-8d9e-4bf8-b55b-9edfccd00bf6',
+                'data-lcw-version': 'prod',
+                'data-org-id': '0deaf548-7a4d-f011-be52-0022489321ca',
+                'data-org-url': 'https://m-0deaf548-7a4d-f011-be52-0022489321ca.au.omnichannelengagementhub.com'
+            }
         }
+    },
+    'prd': {
+        // Production environment - no agents enabled by default
     }
 };
+
+// Environment-specific agent availability
+const AGENT_AVAILABILITY = {
+    'dev': {
+        'default': true,
+        'specialist': true
+    },
+    'uat': {
+        'default': true,
+        'specialist': false
+    },
+    'prd': {
+        'default': false,
+        'specialist': false
+    }
+};
+
+// Current environment state
+let currentEnvironment = 'dev';
 
 // Selectors for chat widget cleanup
 const IFRAME_SELECTORS = 'iframe[id*="oc-lcw"], iframe[title*="Chat"], iframe[src*="livechatwidget"]';
@@ -81,7 +119,19 @@ function createChatScript(src, config) {
 function loadChatWidget(agentType = 'default') {
     cleanupChatWidget();
     
-    const chatConfig = CHAT_CONFIGS[agentType] || CHAT_CONFIGS['default'];
+    // Check if agent is available in current environment
+    if (!isAgentAvailable(agentType)) {
+        console.warn(`Agent type '${agentType}' is not available in '${currentEnvironment}' environment`);
+        return;
+    }
+    
+    const envConfigs = CHAT_CONFIGS[currentEnvironment];
+    if (!envConfigs || !envConfigs[agentType]) {
+        console.warn(`No configuration found for agent '${agentType}' in environment '${currentEnvironment}'`);
+        return;
+    }
+    
+    const chatConfig = envConfigs[agentType];
     
     const script = createChatScript(chatConfig.primarySrc, chatConfig);
     script.onerror = function(el) {
@@ -93,7 +143,72 @@ function loadChatWidget(agentType = 'default') {
     };
     document.body.appendChild(script);
     
-    console.log(`Chat widget loaded for agent type: ${agentType}`);
+    console.log(`Chat widget loaded for agent type: ${agentType} in environment: ${currentEnvironment}`);
+}
+
+/**
+ * Check if an agent is available in the current environment
+ * @param {string} agentType - Agent type to check
+ * @returns {boolean} True if agent is available
+ */
+function isAgentAvailable(agentType) {
+    return AGENT_AVAILABILITY[currentEnvironment] && 
+           AGENT_AVAILABILITY[currentEnvironment][agentType] === true;
+}
+
+/**
+ * Update agent options UI based on current environment
+ */
+function updateAgentAvailability() {
+    document.querySelectorAll('.agent-option').forEach(option => {
+        const agentType = option.querySelector('input[type="radio"]').value;
+        const isAvailable = isAgentAvailable(agentType);
+        
+        if (isAvailable) {
+            option.classList.remove('disabled');
+            option.onclick = function() { selectAgent(agentType); };
+        } else {
+            option.classList.add('disabled');
+            option.onclick = null;
+        }
+    });
+    
+    // Select first available agent
+    const firstAvailable = document.querySelector('.agent-option:not(.disabled)');
+    if (firstAvailable) {
+        const agentType = firstAvailable.querySelector('input[type="radio"]').value;
+        firstAvailable.classList.add('selected');
+        document.getElementById(`agent-${agentType}`).checked = true;
+        loadChatWidget(agentType);
+    }
+}
+
+/**
+ * Select environment and update agent availability
+ * @param {string} environment - Environment to select ('dev', 'uat', or 'prd')
+ */
+function selectEnvironment(environment) {
+    // Update UI selection
+    document.querySelectorAll('.environment-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    event.currentTarget.classList.add('selected');
+    
+    // Update radio button
+    document.getElementById(`env-${environment}`).checked = true;
+    
+    // Update current environment
+    currentEnvironment = environment;
+    
+    // Clear current agent selection
+    document.querySelectorAll('.agent-option').forEach(option => {
+        option.classList.remove('selected');
+    });
+    
+    // Update agent availability and select first available
+    updateAgentAvailability();
+    
+    console.log(`Environment changed to: ${environment}`);
 }
 
 /**
@@ -101,6 +216,12 @@ function loadChatWidget(agentType = 'default') {
  * @param {string} agentType - Agent type to select
  */
 function selectAgent(agentType) {
+    // Check if agent is available
+    if (!isAgentAvailable(agentType)) {
+        console.warn(`Agent '${agentType}' is not available in environment '${currentEnvironment}'`);
+        return;
+    }
+    
     // Update UI selection
     document.querySelectorAll('.agent-option').forEach(option => {
         option.classList.remove('selected');
