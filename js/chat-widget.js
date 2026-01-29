@@ -267,5 +267,14 @@ function selectAgent(agentType) {
  */
 window.lcwCustomizationCallback = function() {
     console.log('LiveChat Widget customization callback invoked');
-    // Add any widget customizations here if needed
+    // Return a valid configuration object with styling properties
+    return {
+        styleProps: {
+            generalStyles: {
+                // Widget position and size
+                bottom: '20px',
+                right: '20px'
+            }
+        }
+    };
 };
