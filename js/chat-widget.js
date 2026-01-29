@@ -256,7 +256,19 @@ function selectAgent(agentType) {
 
 /**
  * Customization callback for Microsoft Omnichannel LiveChat Widget
- * This function is called by the widget for customization purposes
+ * This function is called by the widget for customization purposes.
+ * 
+ * The data-customization-callback attribute is required to prevent console warnings.
+ * This callback can be used to customize widget behavior, appearance, or add event handlers.
+ * 
+ * For more information on customizations, see:
+ * https://learn.microsoft.com/en-us/dynamics365/customer-service/develop/develop-live-chat-widget
+ * 
+ * @example
+ * // You can access the widget SDK here for customizations like:
+ * // - Customizing the chat button
+ * // - Adding event listeners
+ * // - Modifying widget appearance
  */
 window.lcwCustomizationCallback = function() {
     console.log('LiveChat Widget customization callback invoked');
