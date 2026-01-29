@@ -256,9 +256,8 @@ function selectAgent(agentType) {
 
 /**
  * Customization callback for Microsoft Omnichannel LiveChat Widget
- * This function is called by the widget for customization purposes.
- * 
- * The data-customization-callback attribute is required to prevent console warnings.
+ * This function is required by the Microsoft Omnichannel widget (prevents console 
+ * warnings when the data-customization-callback attribute is missing).
  * This callback can be used to customize widget behavior, appearance, or add event handlers.
  * 
  * For more information on customizations, see:
