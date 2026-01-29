@@ -4,6 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <!-- Content Security Policy: Configured to allow Microsoft Omnichannel LiveChat Widget 
+         Note: 'unsafe-inline' and 'unsafe-eval' in script-src are required by the Dynamics 365 
+         Customer Service widget to function properly. These directives are needed for the widget's 
+         dynamic script loading and execution mechanisms.
+         See: https://learn.microsoft.com/en-us/dynamics365/customer-service/develop/develop-live-chat-widget -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com https://api.ipify.org https://ipapi.co; connect-src 'self' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com https://api.ipify.org https://ipapi.co; style-src 'self' 'unsafe-inline' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net; img-src 'self' data: blob: https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com; font-src 'self' data: https://oc-cdn-public-oce.azureedge.net; frame-src 'self' https://*.omnichannelengagementhub.com https://oc-cdn-public-oce.azureedge.net; worker-src 'self' blob:;">
     <title>OmniWebchat - Support Chat</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>

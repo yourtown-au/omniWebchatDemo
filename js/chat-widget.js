@@ -13,7 +13,8 @@ const CHAT_CONFIGS = {
                 'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994',
                 'data-lcw-version': 'prod',
                 'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
+                'data-customization-callback': 'lcwCustomizationCallback'
             }
         },
         'specialist': {
@@ -25,7 +26,8 @@ const CHAT_CONFIGS = {
                 'data-app-id': '7eaac707-889b-4572-98c2-b9bb1eb80b03',
                 'data-lcw-version': 'prod',
                 'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
+                'data-customization-callback': 'lcwCustomizationCallback'
             }
         },
         'survey': {
@@ -37,7 +39,8 @@ const CHAT_CONFIGS = {
                 'data-app-id': 'e2672d5e-7f32-4de2-b399-ae06db3ba7bc',
                 'data-lcw-version': 'prod',
                 'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
+                'data-customization-callback': 'lcwCustomizationCallback'
             }
         }
     },
@@ -51,7 +54,8 @@ const CHAT_CONFIGS = {
                 'data-app-id': 'af764db0-8d9e-4bf8-b55b-9edfccd00bf6',
                 'data-lcw-version': 'prod',
                 'data-org-id': '0deaf548-7a4d-f011-be52-0022489321ca',
-                'data-org-url': 'https://m-0deaf548-7a4d-f011-be52-0022489321ca.au.omnichannelengagementhub.com'
+                'data-org-url': 'https://m-0deaf548-7a4d-f011-be52-0022489321ca.au.omnichannelengagementhub.com',
+                'data-customization-callback': 'lcwCustomizationCallback'
             }
         }
     },
@@ -249,3 +253,23 @@ function selectAgent(agentType) {
     // Reload chat widget with selected agent
     loadChatWidget(agentType);
 }
+
+/**
+ * Customization callback for Microsoft Omnichannel LiveChat Widget
+ * This function is required by the Microsoft Omnichannel widget (prevents console 
+ * warnings when the data-customization-callback attribute is missing).
+ * This callback can be used to customize widget behavior, appearance, or add event handlers.
+ * 
+ * For more information on customizations, see:
+ * https://learn.microsoft.com/en-us/dynamics365/customer-service/develop/develop-live-chat-widget
+ * 
+ * @example
+ * // You can access the widget SDK here for customizations like:
+ * // - Customizing the chat button
+ * // - Adding event listeners
+ * // - Modifying widget appearance
+ */
+window.lcwCustomizationCallback = function() {
+    console.log('LiveChat Widget customization callback invoked');
+    // Add any widget customizations here if needed
+};
