@@ -33,6 +33,7 @@ const CHAT_CONFIGS = {
             primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
             fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
             attributes: {
+                'v2': '',
                 'data-app-id': 'e2672d5e-7f32-4de2-b399-ae06db3ba7bc',
                 'data-lcw-version': 'prod',
                 'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
@@ -68,11 +69,13 @@ const AGENT_AVAILABILITY = {
     },
     'uat': {
         'default': true,
-        'specialist': false
+        'specialist': false,
+        'survey': false
     },
     'prd': {
         'default': false,
-        'specialist': false
+        'specialist': false,
+        'survey': false
     }
 };
 
@@ -126,7 +129,7 @@ function createChatScript(src, config) {
 
 /**
  * Load the chat widget with specified agent type
- * @param {string} agentType - Agent type ('default' or 'specialist')
+ * @param {string} agentType - Agent type (e.g., 'default', 'specialist', 'survey')
  */
 function loadChatWidget(agentType = 'default') {
     cleanupChatWidget();
