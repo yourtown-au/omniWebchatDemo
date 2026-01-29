@@ -27,6 +27,17 @@ const CHAT_CONFIGS = {
                 'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
                 'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
             }
+        },
+        'survey': {
+            id: 'Microsoft_Omnichannel_LCWidget',
+            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            attributes: {
+                'data-app-id': 'e2672d5e-7f32-4de2-b399-ae06db3ba7bc',
+                'data-lcw-version': 'prod',
+                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com'
+            }
         }
     },
     'uat': {
@@ -52,7 +63,8 @@ const CHAT_CONFIGS = {
 const AGENT_AVAILABILITY = {
     'dev': {
         'default': true,
-        'specialist': true
+        'specialist': true,
+        'survey': true
     },
     'uat': {
         'default': true,
