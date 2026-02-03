@@ -10,7 +10,7 @@
          dynamic script loading and execution mechanisms.
          See: https://learn.microsoft.com/en-us/dynamics365/customer-service/develop/develop-live-chat-widget -->
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com https://api.ipify.org https://ipapi.co; connect-src 'self' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com https://api.ipify.org https://ipapi.co; style-src 'self' 'unsafe-inline' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net; img-src 'self' data: blob: https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com; font-src 'self' data: https://oc-cdn-public-oce.azureedge.net; frame-src 'self' https://*.omnichannelengagementhub.com https://oc-cdn-public-oce.azureedge.net; worker-src 'self' blob:;">
-    <title>OmniWebchat - Support Chat</title>
+    <title>OmniWebchat - KHL & ParentLine Support</title>
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
@@ -29,11 +29,11 @@
     <div class="content-wrapper" id="contentWrapper">
         <div class="container">
         <h1>🗨️ OmniWebchat Support</h1>
-        <p class="subtitle">AI-Powered Support for Young People</p>
+        <p class="subtitle">AI-Powered Support for Young People and Parents</p>
         
         <div class="description">
-            <h2>Welcome to KHL Web Chat</h2>
-            <p>We're here to help children and young people with family-related support and counselling. Our service provides:</p>
+            <h2>Welcome to KHL & ParentLine Web Chat</h2>
+            <p>We're here to help children, young people, and parents with family-related support and counselling. Our service provides:</p>
             <ul>
                 <li>Safe and confidential chat support</li>
                 <li>AI-assisted initial guidance</li>
@@ -76,7 +76,7 @@
                 <div class="agent-option selected" onclick="selectAgent('default')">
                     <input type="radio" name="agent" id="agent-default" value="default" checked>
                     <label for="agent-default">
-                        <div class="agent-name">Default Support Agent</div>
+                        <div class="agent-name">KHL Agent</div>
                         <div class="agent-description">General support for all family-related queries and counselling</div>
                     </label>
                 </div>
@@ -92,6 +92,13 @@
                     <label for="agent-survey">
                         <div class="agent-name">Pre-conversation Survey</div>
                         <div class="agent-description">Allows visitors to answer a short pre-conversation survey to provide initial context before connecting to a support agent.</div>
+                    </label>
+                </div>
+                <div class="agent-option" onclick="selectAgent('parentline')">
+                    <input type="radio" name="agent" id="agent-parentline" value="parentline">
+                    <label for="agent-parentline">
+                        <div class="agent-name">ParentLine Agent</div>
+                        <div class="agent-description">Support for Parentline web counselling</div>
                     </label>
                 </div>
             </div>
