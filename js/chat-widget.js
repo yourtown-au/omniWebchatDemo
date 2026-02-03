@@ -39,6 +39,18 @@ const CHAT_CONFIGS = {
                 'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
                 'data-customization-callback': 'lcwCustomizationCallback'
             }
+        },
+        'parentline': {
+            id: 'Microsoft_Omnichannel_LCWidget',
+            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+            attributes: {
+                'data-app-id': '81c886b8-52e2-4794-bfa7-442826895195',
+                'data-lcw-version': 'prod',
+                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
+                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
+                'data-customization-callback': 'lcwCustomizationCallback'
+            }
         }
     },
     'uat': {
@@ -65,7 +77,8 @@ const AGENT_AVAILABILITY = {
     'dev': {
         'default': true,
         'specialist': true,
-        'survey': true
+        'survey': true,
+        'parentline': true
     },
     'uat': {
         'default': true,
