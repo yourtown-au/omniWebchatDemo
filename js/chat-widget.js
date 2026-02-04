@@ -297,7 +297,7 @@ window.lcwCustomizationCallback = function() {
             headerStyles: {
                 container: {
                     // Add inviting banner image at the top
-                    backgroundImage: 'url(/assets/images/chat-banner.svg)',
+                    backgroundImage: 'url(assets/images/chat-banner.svg)',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                     backgroundSize: 'cover',
@@ -333,7 +333,7 @@ window.lcwCustomizationCallback = function() {
                 width: '64px',
                 height: '64px',
                 // Add avatar image as background
-                backgroundImage: 'url(/assets/images/chat-avatar.svg)',
+                backgroundImage: 'url(assets/images/chat-avatar.svg)',
                 backgroundSize: '80%',
                 backgroundPosition: 'center',
                 backgroundRepeat: 'no-repeat',

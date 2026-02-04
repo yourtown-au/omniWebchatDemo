@@ -62,6 +62,7 @@ The customizations use the Microsoft Omnichannel LiveChat Widget 2.0 customizati
 1. **js/chat-widget.js**
    - Enhanced `lcwCustomizationCallback` function with comprehensive styling
    - Added modern UI properties for all widget components
+   - Image paths use relative URLs (`assets/images/...`) to work across different deployment contexts
 
 2. **Assets Created**
    - `assets/images/chat-banner.svg` - Header banner image
@@ -70,10 +71,10 @@ The customizations use the Microsoft Omnichannel LiveChat Widget 2.0 customizati
 ### Browser Support
 
 The customizations use standard CSS properties supported in all modern browsers:
-- Chrome 90+
-- Firefox 88+
-- Safari 14+
-- Edge 90+
+- Chrome 120+
+- Firefox 120+
+- Safari 17+
+- Edge 120+
 
 ## Testing
 
