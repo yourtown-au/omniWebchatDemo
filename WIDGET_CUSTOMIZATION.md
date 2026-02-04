@@ -48,7 +48,7 @@ The `lcwCustomizationCallback` function in `js/chat-widget.js` implements the fo
 
 ## Technical Implementation
 
-### Using LiveChat Widget Version 2.0
+### Using LiveChat Widget 2.0
 
 The customizations use the Microsoft Omnichannel LiveChat Widget 2.0 customization API through the `data-customization-callback` attribute. This approach:
 
