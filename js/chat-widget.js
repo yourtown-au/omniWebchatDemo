@@ -134,6 +134,8 @@ function createChatScript(src, config) {
     script.id = config.id;
     script.src = src;
     script.async = true;
+    // Add v2 attribute required for customization callback to work
+    script.setAttribute('v2', '');
     Object.keys(config.attributes).forEach(key => {
         script.setAttribute(key, config.attributes[key]);
     });

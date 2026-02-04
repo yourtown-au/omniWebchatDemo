@@ -63,10 +63,29 @@ The customizations use the Microsoft Omnichannel LiveChat Widget 2.0 customizati
    - Enhanced `lcwCustomizationCallback` function with comprehensive styling
    - Added modern UI properties for all widget components
    - Image paths use relative URLs (`assets/images/...`) to work across different deployment contexts
+   - **Added `v2` attribute** to script element for customization callback support
 
 2. **Assets Created**
    - `assets/images/chat-banner.svg` - Header banner image
    - `assets/images/chat-avatar.svg` - Chat button avatar
+
+### Widget Version 2 Requirement
+
+The customization callback requires the LiveChat Widget script to have the `v2` attribute set. This is automatically added by the `createChatScript` function in `js/chat-widget.js`. The script tag will look like:
+
+```html
+<script
+    id="Microsoft_Omnichannel_LCWidget"
+    src="https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js"
+    v2
+    data-app-id="..."
+    data-org-id="..."
+    data-org-url="..."
+    data-customization-callback="lcwCustomizationCallback"
+></script>
+```
+
+Without the `v2` attribute, the customization callback will be invoked but the `styleProps` will not be applied.
 
 ### Browser Support
 
@@ -83,6 +102,17 @@ The widget customizations are applied to all agent types:
 - **Support Agent with Custom Instruction** - Experimental agent (primary target)
 - **Pre-conversation Survey** - Survey-enabled agent
 - **ParentLine Agent** - ParentLine support
+
+### Known Issues
+
+**Microsoft Backend Regression (as of early 2025):**
+There are community reports of a backend regression affecting the `data-customization-callback` functionality in the LiveChat Widget v2. Some users report that customizations are not being applied despite correct configuration. This appears to be an issue with Microsoft's Omnichannel service rather than the implementation.
+
+**Workarounds if customizations don't apply:**
+1. Verify the `v2` attribute is present on the script tag (this implementation includes it automatically)
+2. Check browser console for any error messages
+3. Monitor [Microsoft's Dynamics 365 Known Issues page](https://learn.microsoft.com/en-us/dynamics365/customer-service/implement/omnichannel-readme) for updates
+4. Consider opening a support ticket with Microsoft if customizations remain non-functional
 
 ## Deployment Notes
 
