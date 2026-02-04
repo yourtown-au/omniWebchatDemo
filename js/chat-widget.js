@@ -280,13 +280,81 @@ function selectAgent(agentType) {
  */
 window.lcwCustomizationCallback = function() {
     console.log('LiveChat Widget customization callback invoked');
-    // Return a valid configuration object with styling properties
+    
+    // Return a valid configuration object with modern styling properties
     return {
         styleProps: {
+            // General widget styles
             generalStyles: {
-                // Widget position and size
                 bottom: '20px',
-                right: '20px'
+                right: '20px',
+                // Modern shadow for depth
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+                borderRadius: '16px'
+            },
+            
+            // Header customization with banner image
+            headerStyles: {
+                container: {
+                    // Add inviting banner image at the top
+                    backgroundImage: 'url(assets/images/chat-banner.svg)',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundSize: 'cover',
+                    minHeight: '120px',
+                    borderRadius: '16px 16px 0 0',
+                    // Modern gradient overlay for better text readability
+                    position: 'relative'
+                },
+                title: {
+                    color: '#ffffff',
+                    fontSize: '20px',
+                    fontWeight: '600',
+                    textShadow: '0 2px 4px rgba(0,0,0,0.2)',
+                    padding: '20px'
+                },
+                subtitle: {
+                    color: '#ffffff',
+                    fontSize: '14px',
+                    textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+                },
+                closeButton: {
+                    color: '#ffffff',
+                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                }
+            },
+            
+            // Chat button customization with avatar
+            chatButtonStyles: {
+                backgroundColor: '#667eea',
+                // Add modern shadow for floating effect
+                boxShadow: '0 4px 16px rgba(102, 126, 234, 0.4)',
+                borderRadius: '50%',
+                width: '64px',
+                height: '64px',
+                // Add avatar image as background
+                backgroundImage: 'url(assets/images/chat-avatar.svg)',
+                backgroundSize: '80%',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat',
+                // Smooth hover transition
+                transition: 'all 0.3s ease',
+                border: '3px solid #ffffff'
+            },
+            
+            // Minimize button styling for modern look
+            minimizeButtonStyles: {
+                backgroundColor: 'transparent',
+                color: '#ffffff',
+                borderRadius: '8px',
+                padding: '8px'
+            },
+            
+            // Footer styles
+            footerStyles: {
+                backgroundColor: '#f8f9fa',
+                borderRadius: '0 0 16px 16px',
+                padding: '12px'
             }
         }
     };

@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
+  <!-- Background circle -->
+  <defs>
+    <linearGradient id="avatarGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#667eea;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#764ba2;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+  
+  <circle cx="100" cy="100" r="95" fill="url(#avatarGrad)"/>
+  
+  <!-- Support agent illustration -->
+  <g transform="translate(50, 30)">
+    <!-- Head -->
+    <circle cx="50" cy="50" r="30" fill="#FFD4A3"/>
+    
+    <!-- Hair -->
+    <path d="M 20 45 Q 20 20 50 15 Q 80 20 80 45 Z" fill="#4A4A4A"/>
+    
+    <!-- Eyes -->
+    <circle cx="42" cy="45" r="3" fill="#333"/>
+    <circle cx="58" cy="45" r="3" fill="#333"/>
+    
+    <!-- Smile -->
+    <path d="M 38 58 Q 50 64 62 58" stroke="#333" stroke-width="2" fill="none" stroke-linecap="round"/>
+    
+    <!-- Body -->
+    <rect x="30" y="80" width="40" height="30" rx="5" fill="#4CAF50"/>
+    
+    <!-- Arms -->
+    <rect x="20" y="80" width="12" height="20" rx="3" fill="#FFD4A3"/>
+    <rect x="68" y="80" width="12" height="20" rx="3" fill="#FFD4A3"/>
+    
+    <!-- Headset -->
+    <path d="M 23 40 Q 21 48 23 56" stroke="#FFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="23" cy="56" r="4" fill="#FFF"/>
+    <path d="M 77 40 Q 79 48 77 56" stroke="#FFF" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <circle cx="77" cy="56" r="4" fill="#FFF"/>
+    <rect x="21" y="38" width="58" height="4" rx="2" fill="#FFF"/>
+  </g>
+  
+  <!-- Chat bubble icon -->
+  <g transform="translate(130, 145)">
+    <circle cx="25" cy="25" r="23" fill="white" opacity="0.3"/>
+    <path d="M 18 20 L 32 20 M 18 25 L 32 25 M 18 30 L 28 30" stroke="white" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>

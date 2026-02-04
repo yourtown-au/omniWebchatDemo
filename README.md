@@ -1,6 +1,23 @@
 # omniWebchatDemo
 poc demo
 
+## Features
+
+- **Modern UI**: Customized Microsoft Dynamics 365 Omnichannel LiveChat Widget with modern, inviting design
+- **Multiple Agents**: Support for KHL Agent, Support Agent with Custom Instruction, Pre-conversation Survey, and ParentLine Agent
+- **Environment Support**: DEV, UAT, and PRD environments
+- **Custom Branding**: Header banner and avatar images for a more personal experience
+
+## Chat Widget Customization
+
+The live chat widget has been customized with:
+- Inviting header banner image featuring a support agent
+- Custom avatar on the chat button
+- Modern UI with rounded corners and shadows
+- Enhanced color scheme matching the site theme
+
+For detailed information about the widget customizations, see [WIDGET_CUSTOMIZATION.md](WIDGET_CUSTOMIZATION.md).
+
 ## GitHub Pages Setup
 
 This repository is configured to publish to GitHub Pages automatically.
