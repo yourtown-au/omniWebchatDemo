@@ -4,15 +4,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <!-- Content Security Policy: Configured to allow Microsoft Omnichannel LiveChat Widget 
-         Note: 'unsafe-inline' and 'unsafe-eval' in script-src are required by the Dynamics 365 
-         Customer Service widget to function properly. These directives are needed for the widget's 
+
+    <!-- Content Security Policy: Configured to allow Microsoft Omnichannel LiveChat Widget
+         Note: 'unsafe-inline' and 'unsafe-eval' in script-src are required by the Dynamics 365
+         Customer Service widget to function properly. These directives are needed for the widget's
          dynamic script loading and execution mechanisms.
          See: https://learn.microsoft.com/en-us/dynamics365/customer-service/develop/develop-live-chat-widget -->
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com https://api.ipify.org https://ipapi.co; connect-src 'self' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com https://api.ipify.org https://ipapi.co; style-src 'self' 'unsafe-inline' https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net; img-src 'self' data: blob: https://oc-cdn-public-oce.azureedge.net https://ocprodpublicocegs.blob.core.windows.net https://*.omnichannelengagementhub.com; font-src 'self' data: https://oc-cdn-public-oce.azureedge.net; frame-src 'self' https://*.omnichannelengagementhub.com https://oc-cdn-public-oce.azureedge.net; worker-src 'self' blob:;">
+
+    <meta http-equiv="Content-Security-Policy"
+          content="default-src 'self';
+                   script-src 'self' 'unsafe-inline' 'unsafe-eval'
+                     https://oc-cdn-public-oce.azureedge.net
+                     https://ocprodpublicocegs.blob.core.windows.net
+                     https://*.omnichannelengagementhub.com
+                     https://api.ipify.org
+                     https://ipapi.co;
+                   connect-src 'self'
+                     https://oc-cdn-public-oce.azureedge.net
+                     https://ocprodpublicocegs.blob.core.windows.net
+                     https://*.omnichannelengagementhub.com
+                     https://api.ipify.org
+                     https://ipapi.co;
+                   style-src 'self' 'unsafe-inline'
+                     https://oc-cdn-public-oce.azureedge.net
+                     https://ocprodpublicocegs.blob.core.windows.net;
+                   img-src 'self' data: blob:
+                      https://oc-cdn-public-oce.azureedge.net
+                      https://ocprodpublicocegs.blob.core.windows.net
+                      https://*.omnichannelengagementhub.com
+                      https://kidshelpline.com.au
+                      https://yourtownau.sharepoint.com;
+                   font-src 'self' data: https://oc-cdn-public-oce.azureedge.net;
+                   frame-src 'self'
+                     https://*.omnichannelengagementhub.com
+                     https://oc-cdn-public-oce.azureedge.net;
+                   worker-src 'self' blob:;">
+
     <title>OmniWebchat - KHL & ParentLine Support</title>
+
     <link rel="stylesheet" href="css/styles.css">
 </head>
+
 <body>
     <!-- Access Code Overlay -->
     <div class="access-overlay" id="accessOverlay">
@@ -24,130 +56,120 @@
             <p class="error-message" id="errorMessage">Incorrect access code. Please try again.</p>
         </div>
     </div>
-    
+
     <!-- Main Content (hidden by default) -->
     <div class="content-wrapper" id="contentWrapper">
         <div class="container">
-        <h1>🗨️ OmniWebchat Support</h1>
-        <p class="subtitle">AI-Powered Support for Young People and Parents</p>
-        
-        <div class="description">
-            <h2>Welcome to KHL & ParentLine Web Chat</h2>
-            <p>We're here to help children, young people, and parents with family-related support and counselling. Our service provides:</p>
-            <ul>
-                <li>Safe and confidential chat support</li>
-                <li>AI-assisted initial guidance</li>
-                <li>Connection to trained support agents</li>
-                <li>Emergency detection and response</li>
-                <li>Access to helpful resources</li>
-            </ul>
-        </div>
-        
-        <div class="environment-selector">
-            <h3>Choose Environment</h3>
-            <div class="environment-options">
-                <div class="environment-option selected" onclick="selectEnvironment('dev')">
-                    <input type="radio" name="environment" id="env-dev" value="dev" checked>
-                    <label for="env-dev">
-                        <div class="environment-name">Development (DEV)</div>
-                        <div class="environment-description">Development environment for testing</div>
-                    </label>
-                </div>
-                <div class="environment-option" onclick="selectEnvironment('uat')">
-                    <input type="radio" name="environment" id="env-uat" value="uat">
-                    <label for="env-uat">
-                        <div class="environment-name">User Acceptance Testing (UAT)</div>
-                        <div class="environment-description">Pre-production testing environment</div>
-                    </label>
-                </div>
-                <div class="environment-option" onclick="selectEnvironment('prd')">
-                    <input type="radio" name="environment" id="env-prd" value="prd">
-                    <label for="env-prd">
-                        <div class="environment-name">Production (PRD)</div>
-                        <div class="environment-description">Live production environment</div>
-                    </label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="agent-selector">
-            <h3>Choose Your Support Agent</h3>
-            <div class="agent-options">
-                <div class="agent-option selected" onclick="selectAgent('default')">
-                    <input type="radio" name="agent" id="agent-default" value="default" checked>
-                    <label for="agent-default">
-                        <div class="agent-name">KHL Agent</div>
-                        <div class="agent-description">General support for all family-related queries and counselling</div>
-                    </label>
-                </div>
-                <div class="agent-option" onclick="selectAgent('specialist')">
-                    <input type="radio" name="agent" id="agent-specialist" value="specialist">
-                    <label for="agent-specialist">
-                        <div class="agent-name">Support Agent with Custom Instruction</div>
-                        <div class="agent-description">Experimental</div>
-                    </label>
-                </div>
-                <div class="agent-option" onclick="selectAgent('survey')">
-                    <input type="radio" name="agent" id="agent-survey" value="survey">
-                    <label for="agent-survey">
-                        <div class="agent-name">Pre-conversation Survey</div>
-                        <div class="agent-description">Allows visitors to answer a short pre-conversation survey to provide initial context before connecting to a support agent.</div>
-                    </label>
-                </div>
-                <div class="agent-option" onclick="selectAgent('parentline')">
-                    <input type="radio" name="agent" id="agent-parentline" value="parentline">
-                    <label for="agent-parentline">
-                        <div class="agent-name">ParentLine Agent</div>
-                        <div class="agent-description">Support for Parentline web counselling</div>
-                    </label>
-                </div>
-            </div>
-        </div>
-        
-        <div class="visitor-info">
-            <h3>📍 Visitor Information</h3>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-label">IP Address:</span>
-                    <span class="info-value" id="visitorIP">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Device Type:</span>
-                    <span class="info-value" id="visitorDevice">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Location:</span>
-                    <span class="info-value" id="visitorLocation">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Coordinates:</span>
-                    <span class="info-value" id="visitorCoordinates">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Browser:</span>
-                    <span class="info-value" id="visitorBrowser">Loading...</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-label">Session Started:</span>
-                    <span class="info-value" id="sessionTime">Loading...</span>
-                </div>
-            </div>
-        </div>
+            <h1>🗨️ OmniWebchat Support</h1>
+            <p class="subtitle">AI-Powered Support for Young People and Parents</p>
 
-        <div class="chat-info">
-            <p><span class="status-indicator"></span><strong>Chat Available</strong></p>
-            <p>Click the chat button in the bottom right corner to start a conversation.</p>
-            <p>Our AI agent will guide you through the process and connect you with a support agent when needed.</p>
-        </div>
-        
-        <div class="footer">
-            <p><strong>Emergency?</strong> If you or someone you know is in immediate danger, please call 000.</p>
-            <p style="margin-top: 10px;">OmniWebchat - Powered by Dynamics 365 Contact Centre</p>
+            <div class="environment-selector">
+                <h3>Choose Environment</h3>
+                <div class="environment-options">
+                    <div class="environment-option selected" onclick="selectEnvironment('dev')">
+                        <input type="radio" name="environment" id="env-dev" value="dev" checked>
+                        <label for="env-dev">
+                            <div class="environment-name">Development (DEV)</div>
+                            <div class="environment-description">Development environment for testing</div>
+                        </label>
+                    </div>
+
+                    <div class="environment-option" onclick="selectEnvironment('uat')">
+                        <input type="radio" name="environment" id="env-uat" value="uat">
+                        <label for="env-uat">
+                            <div class="environment-name">User Acceptance Testing (UAT)</div>
+                            <div class="environment-description">Pre-production testing environment</div>
+                        </label>
+                    </div>
+
+                    <div class="environment-option" onclick="selectEnvironment('prd')">
+                        <input type="radio" name="environment" id="env-prd" value="prd">
+                        <label for="env-prd">
+                            <div class="environment-name">Production (PRD)</div>
+                            <div class="environment-description">Live production environment</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="agent-selector">
+                <h3>Choose Your Support Agent</h3>
+                <div class="agent-options">
+                    <div class="agent-option selected" onclick="selectAgent('default')">
+                        <input type="radio" name="agent" id="agent-default" value="default" checked>
+                        <label for="agent-default">
+                            <div class="agent-name">KHL Agent</div>
+                            <div class="agent-description">General support for all family-related queries and counselling</div>
+                        </label>
+                    </div>
+
+                    <div class="agent-option" onclick="selectAgent('specialist')">
+                        <input type="radio" name="agent" id="agent-specialist" value="specialist">
+                        <label for="agent-specialist">
+                            <div class="agent-name">Support Agent with Custom Instruction</div>
+                            <div class="agent-description">Experimental</div>
+                        </label>
+                    </div>
+
+                    <div class="agent-option" onclick="selectAgent('survey')">
+                        <input type="radio" name="agent" id="agent-survey" value="survey">
+                        <label for="agent-survey">
+                            <div class="agent-name">Form Based</div>
+                            <div class="agent-description">
+                                POC 2 (Pre-conversation Survey). Allows visitors to answer a short survey before connecting.
+                            </div>
+                        </label>
+                    </div>
+
+                    <div class="agent-option" onclick="selectAgent('parentline')">
+                        <input type="radio" name="agent" id="agent-parentline" value="parentline">
+                        <label for="agent-parentline">
+                            <div class="agent-name">Conversational - Parentline</div>
+                            <div class="agent-description">Support for Parentline web counselling</div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="visitor-info">
+                <h3>📍 Visitor Information</h3>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <span class="info-label">IP Address:</span>
+                        <span class="info-value" id="visitorIP">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Device Type:</span>
+                        <span class="info-value" id="visitorDevice">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Location:</span>
+                        <span class="info-value" id="visitorLocation">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Coordinates:</span>
+                        <span class="info-value" id="visitorCoordinates">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Browser:</span>
+                        <span class="info-value" id="visitorBrowser">Loading...</span>
+                    </div>
+                    <div class="info-item">
+                        <span class="info-label">Session Started:</span>
+                        <span class="info-value" id="sessionTime">Loading...</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="chat-info">
+                <p><span class="status-indicator"></span><strong>Chat Available</strong></p>
+                <p>Click the chat button in the bottom right corner to start a conversation.</p>
+                <p>Our AI agent will guide you through the process and connect you with a support agent when needed.</p>
+            </div>
         </div>
     </div>
-    </div>
 
-    <!-- JavaScript -->
+    <!-- javascript -->
     <script src="js/chat-widget.js"></script>
     <script src="js/auth.js"></script>
     <script src="js/app.js"></script>

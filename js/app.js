@@ -1,13 +1,13 @@
 // Main Application Module
 // Handles user context, device detection, and chat widget initialization
 
-// Get URL parameters
+// URL Parameters
 const urlParams = new URLSearchParams(window.location.search);
-const raw_referrer = urlParams.get('referrer');
-let referrer = raw_referrer?.replace(/^'|'$/g, '') || "KHL";
+const raw_referrer = urlParams.get("referrer");
+let referrer = raw_referrer?.replace(/^'|'$/g, "") || "KHL";
 console.log("Referral:", referrer);
 
-// User data storage
+// Visitor Data Store
 let visitorData = {
     ip: null,
     location: null,
@@ -17,174 +17,122 @@ let visitorData = {
     sessionStartTime: new Date().toLocaleString()
 };
 
-/**
- * Fetch user's IP address and location
- */
-(async () => {
+// Fetch IP + Location
+(async function initVisitorData() {
     try {
-        // Fetch IP address
         const ipResponse = await fetch("https://api.ipify.org?format=json");
         const ipData = await ipResponse.json();
         visitorData.ip = ipData.ip;
         console.log("IP fetched:", visitorData.ip);
-        
-        // Try to get geolocation information from IP
-        try {
-            // Validate IP format before using it
-            if (!/^(\d{1,3}\.){3}\d{1,3}$/.test(visitorData.ip)) {
-                throw new Error("Invalid IP format");
-            }
-            
-            const geoResponse = await fetch(`https://ipapi.co/${visitorData.ip}/json/`);
-            const geoData = await geoResponse.json();
-            
-            if (geoData.city && geoData.country_name) {
-                visitorData.location = `${geoData.city}, ${geoData.region}, ${geoData.country_name}`;
-            } else {
+
+        if (/^(\d{1,3}\.){3}\d{1,3}$/.test(visitorData.ip)) {
+            try {
+                const geoResponse = await fetch(`https://ipapi.co/${visitorData.ip}/json/`);
+                const geoData = await geoResponse.json();
+
+                if (geoData.city && geoData.country_name) {
+                    visitorData.location = `${geoData.city}, ${geoData.region}, ${geoData.country_name}`;
+                } else {
+                    visitorData.location = "Location unavailable";
+                }
+
+                console.log("Geolocation fetched:", visitorData.location);
+            } catch (geoError) {
+                console.warn("Geolocation fetch failed:", geoError);
                 visitorData.location = "Location unavailable";
             }
-            console.log("Geolocation fetched:", visitorData.location);
-        } catch (geoError) {
-            console.warn("Geolocation fetch failed:", geoError);
-            visitorData.location = "Location unavailable";
         }
+
     } catch (error) {
         console.error("IP fetch failed:", error);
         visitorData.ip = "Unavailable";
         visitorData.location = "Unavailable";
     }
-    
-    // Try to get browser geolocation
+
+    // Browser Geolocation
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
             (position) => {
-                visitorData.coordinates = `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
-                console.log("Browser geolocation:", visitorData.coordinates);
+                visitorData.coordinates =
+                    `${position.coords.latitude.toFixed(4)}, ${position.coords.longitude.toFixed(4)}`;
                 updateVisitorDisplay();
             },
-            (error) => {
-                console.warn("Browser geolocation denied or unavailable:", error.message);
+            () => {
                 visitorData.coordinates = "Unavailable";
                 updateVisitorDisplay();
             }
         );
     } else {
-        visitorData.coordinates = "Not supported by browser";
+        visitorData.coordinates = "Not supported";
     }
-    
-    // Get device and browser info
+
     visitorData.device = getDeviceType();
     visitorData.browser = getBrowserInfo();
-    
-    // Update display (will be updated again when geolocation completes if available)
+
     updateVisitorDisplay();
 })();
 
-/**
- * Get browser information
- * @returns {string} Browser name
- */
+// Browser Detection
 function getBrowserInfo() {
     const ua = navigator.userAgent;
-    let browser = "Unknown";
-    
-    if (ua.indexOf("Firefox") > -1) {
-        browser = "Firefox";
-    } else if (ua.indexOf("SamsungBrowser") > -1) {
-        browser = "Samsung Internet";
-    } else if (ua.indexOf("Opera") > -1 || ua.indexOf("OPR") > -1) {
-        browser = "Opera";
-    } else if (ua.indexOf("Trident") > -1) {
-        browser = "Internet Explorer";
-    } else if (ua.indexOf("Edge") > -1) {
-        browser = "Edge (Legacy)";
-    } else if (ua.indexOf("Edg") > -1) {
-        browser = "Edge";
-    } else if (ua.indexOf("Chrome") > -1) {
-        browser = "Chrome";
-    } else if (ua.indexOf("Safari") > -1) {
-        browser = "Safari";
+
+    if (ua.includes("Firefox")) return "Firefox";
+    if (ua.includes("SamsungBrowser")) return "Samsung Internet";
+    if (ua.includes("OPR") || ua.includes("Opera")) return "Opera";
+    if (ua.includes("Trident")) return "Internet Explorer";
+    if (ua.includes("Edg")) return "Edge";
+    if (ua.includes("Chrome")) return "Chrome";
+    if (ua.includes("Safari")) return "Safari";
+
+    return "Unknown";
+}
+
+// Device Detection
+function getDeviceType() {
+    const ua = navigator.userAgentData;
+
+    if (ua && ua.platform) {
+        return ua.platform;
     }
-    
-    return browser;
+
+    const fallbackUA = navigator.userAgent;
+
+    if (/iPad/.test(fallbackUA)) return "iPad";
+    if (/iPhone/.test(fallbackUA)) return "iPhone";
+    if (/Android/.test(fallbackUA)) return "Android";
+    if (/Windows/.test(fallbackUA)) return "Windows";
+    if (/Macintosh/.test(fallbackUA)) return "Mac";
+
+    return "Unknown";
 }
 
-/**
- * Update visitor information display
- */
+// Update Visitor Display
 function updateVisitorDisplay() {
-    const ipElement = document.getElementById('visitorIP');
-    const deviceElement = document.getElementById('visitorDevice');
-    const locationElement = document.getElementById('visitorLocation');
-    const coordinatesElement = document.getElementById('visitorCoordinates');
-    const browserElement = document.getElementById('visitorBrowser');
-    const sessionTimeElement = document.getElementById('sessionTime');
-    
-    if (ipElement) ipElement.textContent = visitorData.ip || "Loading...";
-    if (deviceElement) deviceElement.textContent = visitorData.device || "Loading...";
-    if (locationElement) locationElement.textContent = visitorData.location || "Loading...";
-    if (coordinatesElement) coordinatesElement.textContent = visitorData.coordinates || "Loading...";
-    if (browserElement) browserElement.textContent = visitorData.browser || "Loading...";
-    if (sessionTimeElement) sessionTimeElement.textContent = visitorData.sessionStartTime || "Loading...";
+    const map = {
+        visitorIP: visitorData.ip,
+        visitorDevice: visitorData.device,
+        visitorLocation: visitorData.location,
+        visitorCoordinates: visitorData.coordinates,
+        visitorBrowser: visitorData.browser,
+        sessionTime: visitorData.sessionStartTime
+    };
+
+    Object.keys(map).forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.textContent = map[id] || "Loading...";
+    });
 }
 
-/**
- * Get full user agent string
- * @returns {string} User agent string
- */
+// Full User Agent
 function getFullUserAgent() {
     return navigator.userAgent;
 }
 
-/**
- * Detect device type from user agent
- * @returns {string} Device type
- */
-function getDeviceType() {
-    const ua = navigator.userAgent || navigator.vendor || window.opera;
-
-    // iPad (older iOS versions report "iPad")
-    if (/iPad/.test(ua)) {
-        return "iPad";
-    }
-
-    // iPad (iPadOS 13+ identifies as Mac, but has touch support)
-    if (/Macintosh/.test(ua) && navigator.maxTouchPoints && navigator.maxTouchPoints > 1) {
-        return "iPad";
-    }
-
-    // iPhone
-    if (/iPhone/.test(ua)) {
-        return "iPhone";
-    }
-
-    // Android
-    if (/Android/.test(ua)) {
-        return "Android";
-    }
-
-    // Windows
-    if (/Windows/.test(ua)) {
-        return "Windows";
-    }
-
-    // Mac
-    if (/Macintosh/.test(ua)) {
-        return "Mac";
-    }
-
-    // Fallback
-    return "Unknown";
-}
-
-/**
- * Initialize chat context when widget is ready
- */
-window.addEventListener("lcw:ready", function () {
-    console.log("Widget ready. Setting context...");
+// LiveChat Context Injection
+function setChatContext() {
     const ctx = {
         VisitorIP: { value: visitorData.ip || "unavailable", isDisplayable: true },
-        Referral:  { value: referrer, isDisplayable: true },
+        Referral: { value: referrer, isDisplayable: true },
         DeviceType: { value: visitorData.device || "Unknown", isDisplayable: true },
         UserAgent: { value: getFullUserAgent(), isDisplayable: true },
         Location: { value: visitorData.location || "unavailable", isDisplayable: true },
@@ -195,15 +143,20 @@ window.addEventListener("lcw:ready", function () {
         Microsoft.Omnichannel.LiveChatWidget.SDK.setContextProvider(() => ctx);
         console.log("Context set:", ctx);
     } else {
-        console.warn("SDK not ready to set context.");
+        console.warn("LiveChat SDK not ready.");
     }
+}
+
+// Listen for LCW ready event
+window.addEventListener("lcw:ready", function () {
+    console.log("Widget ready event received.");
+    setChatContext();
 });
 
-/**
- * Initialize application on DOM ready
- */
-document.addEventListener('DOMContentLoaded', function() {
-    initAuth();
-    // Update visitor display when DOM is ready
+// DOM Ready
+document.addEventListener("DOMContentLoaded", function () {
+    if (typeof initAuth === "function") {
+        initAuth();
+    }
     updateVisitorDisplay();
 });

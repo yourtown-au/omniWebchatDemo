@@ -1,363 +1,513 @@
-// Chat Widget Module
-// Handles Microsoft Omnichannel LiveChat widget loading and configuration
+﻿// js/chat-widget.js
+// Loads Microsoft Omnichannel LiveChat widget by env + agent
+// Applies per-agent branding (logo/header/bot avatar) via LCW v2 customization callback
+// Also applies page theme via body class (brand-khl / brand-parentline / brand-survey)
 
-// Configuration for different chat agents and environments
 const CHAT_CONFIGS = {
-    'dev': {
-        'default': {
-            id: 'Microsoft_Omnichannel_LCWidget',
-            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+    dev: {
+        default: {
+            id: "Microsoft_Omnichannel_LCWidget",
+            primarySrc: "https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            fallbackSrc: "https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js",
             attributes: {
-                'data-app-id': '4683a226-31e3-454a-b171-9af9ccace994',
-                'data-lcw-version': 'prod',
-                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
-                'data-customization-callback': 'lcwCustomizationCallback'
+                "data-app-id": "4683a226-31e3-454a-b171-9af9ccace994",
+                "data-lcw-version": "prod",
+                "data-org-id": "025ebcf6-780b-f011-9aee-002248e344cd",
+                "data-org-url": "https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com",
+                "data-customization-callback": "lcwCustomizationCallback"
             }
         },
-        'specialist': {
-            id: 'Microsoft_Omnichannel_LCWidget',
-            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+        specialist: {
+            id: "Microsoft_Omnichannel_LCWidget",
+            primarySrc: "https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            fallbackSrc: "https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js",
             attributes: {
-                'data-app-id': '7eaac707-889b-4572-98c2-b9bb1eb80b03',
-                'data-lcw-version': 'prod',
-                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
-                'data-customization-callback': 'lcwCustomizationCallback'
+                "data-app-id": "7eaac707-889b-4572-98c2-b9bb1eb80b03",
+                "data-lcw-version": "prod",
+                "data-org-id": "025ebcf6-780b-f011-9aee-002248e344cd",
+                "data-org-url": "https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com",
+                "data-customization-callback": "lcwCustomizationCallback"
             }
         },
-        'survey': {
-            id: 'Microsoft_Omnichannel_LCWidget',
-            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+        survey: {
+            id: "Microsoft_Omnichannel_LCWidget",
+            primarySrc: "https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            fallbackSrc: "https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js",
             attributes: {
-                'data-app-id': 'e2672d5e-7f32-4de2-b399-ae06db3ba7bc',
-                'data-lcw-version': 'prod',
-                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
-                'data-customization-callback': 'lcwCustomizationCallback'
+                "data-app-id": "e2672d5e-7f32-4de2-b399-ae06db3ba7bc",
+                "data-lcw-version": "prod",
+                "data-org-id": "025ebcf6-780b-f011-9aee-002248e344cd",
+                "data-org-url": "https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com",
+                "data-customization-callback": "lcwCustomizationCallback"
             }
         },
-        'parentline': {
-            id: 'Microsoft_Omnichannel_LCWidget',
-            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+        parentline: {
+            id: "Microsoft_Omnichannel_LCWidget",
+            primarySrc: "https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            fallbackSrc: "https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js",
             attributes: {
-                'data-app-id': '81c886b8-52e2-4794-bfa7-442826895195',
-                'data-lcw-version': 'prod',
-                'data-org-id': '025ebcf6-780b-f011-9aee-002248e344cd',
-                'data-org-url': 'https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com',
-                'data-customization-callback': 'lcwCustomizationCallback'
+                "data-app-id": "81c886b8-52e2-4794-bfa7-442826895195",
+                "data-lcw-version": "prod",
+                "data-org-id": "025ebcf6-780b-f011-9aee-002248e344cd",
+                "data-org-url": "https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com",
+                "data-customization-callback": "lcwCustomizationCallback"
             }
         }
     },
-    'uat': {
-        'default': {
-            id: 'Microsoft_Omnichannel_LCWidget',
-            primarySrc: 'https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js',
-            fallbackSrc: 'https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js',
+
+    uat: {
+        default: {
+            id: "Microsoft_Omnichannel_LCWidget",
+            primarySrc: "https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            fallbackSrc: "https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js",
             attributes: {
-                'data-app-id': 'af764db0-8d9e-4bf8-b55b-9edfccd00bf6',
-                'data-lcw-version': 'prod',
-                'data-org-id': '0deaf548-7a4d-f011-be52-0022489321ca',
-                'data-org-url': 'https://m-0deaf548-7a4d-f011-be52-0022489321ca.au.omnichannelengagementhub.com',
-                'data-customization-callback': 'lcwCustomizationCallback'
+                "data-app-id": "af764db0-8d9e-4bf8-b55b-9edfccd00bf6",
+                "data-lcw-version": "prod",
+                "data-org-id": "0deaf548-7a4d-f011-be52-0022489321ca",
+                "data-org-url": "https://m-0deaf548-7a4d-f011-be52-0022489321ca.au.omnichannelengagementhub.com",
+                "data-customization-callback": "lcwCustomizationCallback"
             }
         }
     },
-    'prd': {
-        // Production environment - no agents enabled by default
-    }
+
+    prd: {}
 };
 
-// Environment-specific agent availability
 const AGENT_AVAILABILITY = {
-    'dev': {
-        'default': true,
-        'specialist': true,
-        'survey': true,
-        'parentline': true
+    dev: { default: true, specialist: true, survey: true, parentline: true },
+    uat: { default: true, specialist: false, survey: false, parentline: false },
+    prd: { default: false, specialist: false, survey: false, parentline: false }
+};
+
+// Per-agent BRANDING (widget logo/header/bot avatar) 
+const BRANDING = {
+    // KHL Agent (your "default")
+    default: {
+        headerTitle: "Kids Helpline",
+        brand: "#5B2D90",
+        brandHover: "#4A2377",
+        widgetBg: "#ffffff",
+        launcherLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc",
+        botAvatarUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc",
+        headerLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc"
     },
-    'uat': {
-        'default': true,
-        'specialist': false,
-        'survey': false
+
+    // Experimental agent (optional - using KHL look)
+    specialist: {
+        headerTitle: "KHL Agent (Experimental)",
+        brand: "#5B2D90",
+        brandHover: "#4A2377",
+        widgetBg: "#ffffff",
+        launcherLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc",
+        botAvatarUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc",
+        headerLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc"
     },
-    'prd': {
-        'default': false,
-        'specialist': false,
-        'survey': false
+
+    // Pre-conversation Survey
+    survey: {
+        headerTitle: "Pre-conversation Survey",
+        brand: "#0F4C81",
+        brandHover: "#0C3E69",
+        widgetBg: "#ffffff",
+        launcherLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/Parentline_P_Logo.png?csf=1&web=1&e=g8OjgS", // TODO: replace
+        botAvatarUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_AIAgent%20(1).png?csf=1&web=1&e=SAqGwF", // TODO: replace
+        headerLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/Parentline_P_Logo.png?csf=1&web=1&e=g8OjgS"
+    },
+
+    // Parentline
+    parentline: {
+        headerTitle: "parentline counselling",
+        brand: "#3D8F98",
+        brandHover: "#327982",
+        widgetBg: "#ffffff",
+        launcherLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/Parentline_P_Logo.png?csf=1&web=1&e=g8OjgS", // TODO: replace
+        botAvatarUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_AIAgent%20(1).png?csf=1&web=1&e=SAqGwF", // TODO: replace
+        headerLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/Parentline_P_Logo.png?csf=1&web=1&e=g8OjgS"
     }
 };
 
-// Current environment state
-let currentEnvironment = 'dev';
+let currentEnvironment = "dev";
+let currentAgentType = "default"; // used by branding callback
 
-// Selectors for chat widget cleanup
 const IFRAME_SELECTORS = 'iframe[id*="oc-lcw"], iframe[title*="Chat"], iframe[src*="livechatwidget"]';
 const CONTAINER_SELECTORS = 'div[id*="oc-lcw"], div[class*="oc-lcw"]';
+const BUTTON_SELECTORS = 'button[id*="lcw"], button[class*="lcw"]';
 
 /**
- * Remove existing chat widget elements
+ * Demo page branding (CSS) using body class.
+ * Maps default/specialist -> khl look, so your CSS can be: brand-khl, brand-parentline, brand-survey
  */
-function cleanupChatWidget() {
-    // Remove existing script
-    const existingScript = document.getElementById('Microsoft_Omnichannel_LCWidget');
-    if (existingScript) {
-        existingScript.remove();
-    }
-    
-    // Remove all chat widget iframes
-    const chatIframes = document.querySelectorAll(IFRAME_SELECTORS);
-    chatIframes.forEach(iframe => iframe.remove());
-    
-    // Remove widget container divs
-    const chatContainers = document.querySelectorAll(CONTAINER_SELECTORS);
-    chatContainers.forEach(container => container.remove());
-    
-    // Clear the global Microsoft Omnichannel object
-    if (window.Microsoft && window.Microsoft.Omnichannel && window.Microsoft.Omnichannel.LiveChatWidget) {
-        delete window.Microsoft.Omnichannel.LiveChatWidget;
-    }
+function applyBrandTheme(agentType) {
+    const key = (agentType === "default" || agentType === "specialist") ? "khl" : agentType;
+
+    document.body.classList.remove(
+        "brand-default",
+        "brand-khl",
+        "brand-parentline",
+        "brand-survey",
+        "brand-specialist"
+    );
+
+    document.body.classList.add(`brand-${key}`);
 }
 
-/**
- * Create chat widget script element
- * @param {string} src - Script source URL
- * @param {Object} config - Chat configuration object
- * @returns {HTMLScriptElement} Script element
- */
+function cleanupChatWidget() {
+    const existingScript = document.getElementById("Microsoft_Omnichannel_LCWidget");
+    if (existingScript) existingScript.remove();
+
+    document.querySelectorAll(IFRAME_SELECTORS).forEach((i) => i.remove());
+    document.querySelectorAll(CONTAINER_SELECTORS).forEach((c) => c.remove());
+    document.querySelectorAll(BUTTON_SELECTORS).forEach((b) => b.remove());
+
+    try {
+        if (window.Microsoft?.Omnichannel?.LiveChatWidget?.SDK) {
+            delete window.Microsoft.Omnichannel.LiveChatWidget.SDK;
+        }
+        if (window.Microsoft?.Omnichannel?.LiveChatWidget) {
+            delete window.Microsoft.Omnichannel.LiveChatWidget;
+        }
+    } catch (e) { /* ignore */ }
+}
+
 function createChatScript(src, config) {
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.id = config.id;
     script.src = src;
     script.async = true;
-    // Add v2 attribute required for customization callback to work
-    script.setAttribute('v2', '');
-    Object.keys(config.attributes).forEach(key => {
-        script.setAttribute(key, config.attributes[key]);
-    });
+
+    // for LCW v2 customizations
+    script.setAttribute("v2", "");
+
+    Object.keys(config.attributes).forEach((key) => script.setAttribute(key, config.attributes[key]));
     return script;
 }
 
-/**
- * Load the chat widget with specified agent type
- * @param {string} agentType - Agent type (e.g., 'default', 'specialist', 'survey')
- */
-function loadChatWidget(agentType = 'default') {
+function loadChatWidget(agentType = "default") {
     cleanupChatWidget();
-    
-    // Check if agent is available in current environment
+
     if (!isAgentAvailable(agentType)) {
-        console.warn(`Agent type '${agentType}' is not available in '${currentEnvironment}' environment`);
+        console.warn(`Agent '${agentType}' is not available in '${currentEnvironment}'`);
         return;
     }
-    
+
     const envConfigs = CHAT_CONFIGS[currentEnvironment];
     if (!envConfigs || !envConfigs[agentType]) {
-        console.warn(`No configuration found for agent '${agentType}' in environment '${currentEnvironment}'`);
+        console.warn(`No config for agent '${agentType}' in environment '${currentEnvironment}'`);
         return;
     }
-    
+
+    // store current agent for the widget styling callback
+    currentAgentType = agentType;
+
     const chatConfig = envConfigs[agentType];
-    
+
     const script = createChatScript(chatConfig.primarySrc, chatConfig);
-    script.onerror = function(el) {
-        if (el.target.parentNode) {
-            el.target.remove();
-        }
-        const fallbackScript = createChatScript(chatConfig.fallbackSrc, chatConfig);
-        document.body.appendChild(fallbackScript);
+    script.onerror = function (ev) {
+        try { ev?.target?.remove?.(); } catch (e) { /* ignore */ }
+        const fallback = createChatScript(chatConfig.fallbackSrc, chatConfig);
+        document.body.appendChild(fallback);
     };
+
     document.body.appendChild(script);
-    
-    console.log(`Chat widget loaded for agent type: ${agentType} in environment: ${currentEnvironment}`);
+    console.log(`Loaded LCW for agent '${agentType}' in env '${currentEnvironment}'`);
 }
 
-/**
- * Check if an agent is available in the current environment
- * @param {string} agentType - Agent type to check
- * @returns {boolean} True if agent is available
- */
 function isAgentAvailable(agentType) {
-    return AGENT_AVAILABILITY[currentEnvironment] && 
-           AGENT_AVAILABILITY[currentEnvironment][agentType] === true;
+    return AGENT_AVAILABILITY[currentEnvironment] && AGENT_AVAILABILITY[currentEnvironment][agentType] === true;
 }
 
-/**
- * Update agent options UI based on current environment
- */
 function updateAgentAvailability() {
-    document.querySelectorAll('.agent-option').forEach(option => {
+    document.querySelectorAll(".agent-option").forEach((option) => {
         const agentType = option.querySelector('input[type="radio"]').value;
-        const isAvailable = isAgentAvailable(agentType);
-        
-        if (isAvailable) {
-            option.classList.remove('disabled');
-            option.onclick = function() { selectAgent(agentType); };
+        const available = isAgentAvailable(agentType);
+
+        if (available) {
+            option.classList.remove("disabled");
+            option.onclick = function (evt) { selectAgent(agentType, evt); };
         } else {
-            option.classList.add('disabled');
+            option.classList.add("disabled");
             option.onclick = null;
         }
     });
-    
-    // Select first available agent
-    const firstAvailable = document.querySelector('.agent-option:not(.disabled)');
+
+    // Auto-select first available in the environment
+    const firstAvailable = document.querySelector(".agent-option:not(.disabled)");
     if (firstAvailable) {
         const agentType = firstAvailable.querySelector('input[type="radio"]').value;
-        firstAvailable.classList.add('selected');
+
+        document.querySelectorAll(".agent-option").forEach((o) => o.classList.remove("selected"));
+        firstAvailable.classList.add("selected");
         document.getElementById(`agent-${agentType}`).checked = true;
-        loadChatWidget(agentType);
+
+        applyBrandTheme(agentType); 
+        loadChatWidget(agentType);  
     }
 }
 
-/**
- * Select environment and update agent availability
- * @param {string} environment - Environment to select ('dev', 'uat', or 'prd')
- */
-function selectEnvironment(environment) {
-    // Update UI selection
-    document.querySelectorAll('.environment-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    event.currentTarget.classList.add('selected');
-    
-    // Update radio button
+function selectEnvironment(environment, evt) {
+    document.querySelectorAll(".environment-option")
+        .forEach((o) => o.classList.remove("selected"));
+
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add("selected");
+    }
+
     document.getElementById(`env-${environment}`).checked = true;
-    
-    // Update current environment
     currentEnvironment = environment;
-    
-    // Clear current agent selection
-    document.querySelectorAll('.agent-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    
-    // Update agent availability and select first available
+
+    document.querySelectorAll(".agent-option")
+        .forEach((o) => o.classList.remove("selected"));
+
     updateAgentAvailability();
-    
-    console.log(`Environment changed to: ${environment}`);
 }
 
-/**
- * Select agent and reload chat widget
- * @param {string} agentType - Agent type to select
- */
-function selectAgent(agentType) {
-    // Check if agent is available
+function selectAgent(agentType, evt) {
     if (!isAgentAvailable(agentType)) {
-        console.warn(`Agent '${agentType}' is not available in environment '${currentEnvironment}'`);
+        console.warn(`Agent '${agentType}' not available in '${currentEnvironment}'`);
         return;
     }
-    
-    // Update UI selection
-    document.querySelectorAll('.agent-option').forEach(option => {
-        option.classList.remove('selected');
-    });
-    event.currentTarget.classList.add('selected');
-    
-    // Update radio button
+
+    document.querySelectorAll(".agent-option")
+        .forEach((o) => o.classList.remove("selected"));
+
+    if (evt && evt.currentTarget) {
+        evt.currentTarget.classList.add("selected");
+    }
+
     document.getElementById(`agent-${agentType}`).checked = true;
-    
-    // Reload chat widget with selected agent
+
+    applyBrandTheme(agentType);
     loadChatWidget(agentType);
 }
 
-/**
- * Customization callback for Microsoft Omnichannel LiveChat Widget
- * This function is required by the Microsoft Omnichannel widget (prevents console 
- * warnings when the data-customization-callback attribute is missing).
- * This callback can be used to customize widget behavior, appearance, or add event handlers.
- * 
- * For more information on customizations, see:
- * https://learn.microsoft.com/en-us/dynamics365/customer-service/develop/develop-live-chat-widget
- * 
- * @example
- * // You can access the widget SDK here for customizations like:
- * // - Customizing the chat button
- * // - Adding event listeners
- * // - Modifying widget appearance
- */
-window.lcwCustomizationCallback = function() {
-    console.log('LiveChat Widget customization callback invoked');
-    
-    // Return a valid configuration object with modern styling properties
+// Expose for inline onclick
+window.selectEnvironment = selectEnvironment;
+window.selectAgent = selectAgent;
+window.loadChatWidget = loadChatWidget;
+window.updateAgentAvailability = updateAgentAvailability;
+
+// LCW v2 Customization Callback
+// Must match data-customization-callback="lcwCustomizationCallback"
+function lcwCustomizationCallback() {
+    const cfg = BRANDING[currentAgentType] || BRANDING.default;
+
+    const BRAND = cfg.brand;
+    const BRAND_HOVER = cfg.brandHover;
+    const WIDGET_BG = cfg.widgetBg;
+    const LAUNCHER_LOGO = cfg.launcherLogoUrl;
+    const BOT_AVATAR = cfg.botAvatarUrl;
+    const HEADER_LOGO = cfg.headerLogoUrl;
+
     return {
         styleProps: {
-            // General widget styles
-            generalStyles: {
-                bottom: '20px',
-                right: '20px',
-                // Modern shadow for depth
-                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-                borderRadius: '16px'
+            generalStyleProps: {
+                width: "420px",
+                height: "650px",
+                borderRadius: "18px",
+                bottom: "24px",
+                right: "24px",
+                fontFamily: "Segoe UI, Arial, sans-serif",
+                boxShadow: "0 16px 48px rgba(0,0,0,0.18)",
+                overflow: "hidden"
+            }
+        },
+
+        chatButtonProps: {
+            styleProps: {
+                generalStyleProps: {
+                    position: "fixed",
+                    width: "150px",
+                    height: "64px",
+                    borderRadius: "12px",
+                    backgroundColor: WIDGET_BG,
+                    boxShadow: "0 8px 16px rgba(0,0,0,0.18)"
+                },
+                hoverStyleProps: { backgroundColor: "rgba(0,0,0,0.04)" }
             },
-            
-            // Header customization with banner image
-            headerStyles: {
-                container: {
-                    // Add inviting banner image at the top
-                    backgroundImage: 'url(assets/images/chat-banner.svg)',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                    backgroundSize: 'cover',
-                    minHeight: '120px',
-                    borderRadius: '16px 16px 0 0',
-                    // Modern gradient overlay for better text readability
-                    position: 'relative'
+            iconStyleProps: {
+                width: "150px",
+                height: "64px",
+                cursor: "pointer",
+                backgroundImage: `url('${LAUNCHER_LOGO}')`,
+                backgroundSize: "contain",
+                backgroundRepeat: "no-repeat",
+                backgroundPosition: "center"
+            }
+        },
+
+        headerProps: {
+            controlProps: {
+                headerIconProps: {
+                    src: HEADER_LOGO,
+                    alt: cfg.headerTitle,
+                    width: "28px",
+                    height: "28px"
                 },
-                title: {
-                    color: '#ffffff',
-                    fontSize: '20px',
-                    fontWeight: '600',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.2)',
-                    padding: '20px'
+                headerTitleProps: {
+                    text: cfg.headerTitle
                 },
-                subtitle: {
-                    color: '#ffffff',
-                    fontSize: '14px',
-                    textShadow: '0 1px 2px rgba(0,0,0,0.2)'
+                minimizeButtonProps: { iconName: "MiniContract" },
+                closeButtonProps: { iconName: "Leave" }
+            },
+
+            styleProps: {
+                generalStyleProps: {
+                    backgroundColor: BRAND,
+                    borderRadius: "18px 18px 0 0",
+                    padding: "10px 10px"
                 },
-                closeButton: {
-                    color: '#ffffff',
-                    filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.3))'
+                titleStyleProps: {
+                    marginLeft: "10px",
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    color: "#ffffff"
+                },
+                minimizeButtonStyleProps: {
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.18)"
+                },
+                minimizeButtonHoverStyleProps: {
+                    backgroundColor: "rgba(255,255,255,0.28)"
+                },
+                closeButtonStyleProps: {
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "8px",
+                    backgroundColor: "rgba(255,255,255,0.18)"
+                },
+                closeButtonHoverStyleProps: {
+                    backgroundColor: "rgba(255,255,255,0.28)"
                 }
+            }
+        },
+
+        loadingPaneProps: {
+            controlProps: {
+                titleText: "We will be with you shortly...",
+                subtitleText: "Connecting you to a counsellor...",
+                hideSpinnerText: true,
+                spinnerSize: 3,
+                iconImageProps: {
+                    src: HEADER_LOGO,
+                    alt: cfg.headerTitle,
+                    width: "80px",
+                    height: "80px"
+                }
+            }
+        },
+
+        confirmationPaneProps: {
+            controlProps: {
+                titleText: "Close Chat",
+                subtitleText: "Do you really want to close this chat?",
+                confirmButtonText: "Close",
+                cancelButtonText: "Cancel"
             },
-            
-            // Chat button customization with avatar
-            chatButtonStyles: {
-                backgroundColor: '#667eea',
-                // Add modern shadow for floating effect
-                boxShadow: '0 4px 16px rgba(102, 126, 234, 0.4)',
-                borderRadius: '50%',
-                width: '64px',
-                height: '64px',
-                // Add avatar image as background
-                backgroundImage: 'url(assets/images/chat-avatar.svg)',
-                backgroundSize: '80%',
-                backgroundPosition: 'center',
-                backgroundRepeat: 'no-repeat',
-                // Smooth hover transition
-                transition: 'all 0.3s ease',
-                border: '3px solid #ffffff'
+            styleProps: {
+                generalStyleProps: {
+                    position: "absolute",
+                    bottom: 0,
+                    left: 0,
+                    width: "100%",
+                    borderRadius: "18px",
+                    backgroundColor: "#ffffff",
+                    boxShadow: "0 -14px 30px rgba(0,0,0,0.18)",
+                    borderTop: "1px solid rgba(17,24,39,0.10)",
+                    padding: "14px 16px 16px"
+                },
+                confirmButtonStyleProps: {
+                    backgroundColor: BRAND,
+                    color: "#ffffff",
+                    borderRadius: "10px",
+                    border: "1px solid " + BRAND,
+                    padding: "10px 18px",
+                    fontWeight: "600"
+                },
+                cancelButtonStyleProps: {
+                    backgroundColor: "#ffffff",
+                    color: BRAND,
+                    borderRadius: "10px",
+                    border: "1px solid " + BRAND,
+                    padding: "10px 18px",
+                    fontWeight: "600"
+                },
+                confirmButtonHoveredStyleProps: {
+                    backgroundColor: BRAND_HOVER,
+                    border: "1px solid " + BRAND_HOVER
+                },
+                cancelButtonHoveredStyleProps: {
+                    backgroundColor: "rgba(0,0,0,0.06)"
+                },
+                buttonGroupStyleProps: {
+                    flexFlow: "column",
+                    width: "100%",
+                    gap: "10px",
+                    marginTop: "10px"
+                }
+            }
+        },
+
+        webChatContainerProps: {
+            webChatStyles: {
+                backgroundColor: "#ffffff",
+
+                bubbleBorderWidth: 0,
+                bubbleBorderRadius: 14,
+                bubbleBackground: "#EAF3F3",
+                bubbleTextColor: "#111827",
+
+                bubbleFromUserBorderRadius: 14,
+                bubbleFromUserBackground: BRAND,
+                bubbleFromUserTextColor: "#ffffff",
+
+                bubbleMaxWidth: 320,
+                bubbleMinWidth: 40,
+
+                sendBoxBackground: "#F3FAFA",
+                sendBoxBorderTop: "1px solid rgba(17,24,39,0.08)",
+
+                // Actions (Yes/No) styling
+                suggestedActionBorderRadius: 999,
+                suggestedActionBorderWidth: 1,
+                suggestedActionBorderColor: BRAND,
+
+                suggestedActionBackground: "#F3F6F9",
+                suggestedActionTextColor: BRAND,
+
+                suggestedActionPadding: "8px 18px",
+                suggestedActionMargin: "4px 8px 4px 0",
+
+                suggestedActionHeight: 38,
+                suggestedActionFontSize: 14,
+
+                suggestedActionHoverBackground: "rgba(0,0,0,0.06)",
+                suggestedActionHoverTextColor: BRAND,
+                suggestedActionHoverBorderColor: BRAND
             },
-            
-            // Minimize button styling for modern look
-            minimizeButtonStyles: {
-                backgroundColor: 'transparent',
-                color: '#ffffff',
-                borderRadius: '8px',
-                padding: '8px'
-            },
-            
-            // Footer styles
-            footerStyles: {
-                backgroundColor: '#f8f9fa',
-                borderRadius: '0 0 16px 16px',
-                padding: '12px'
+
+            // Bot avatar override (replaces initials)
+            renderingMiddlewareProps: {
+                avatarStyleProps: {
+                    backgroundImage: `url('${BOT_AVATAR}')`,
+                    backgroundSize: "cover",
+                    backgroundRepeat: "no-repeat",
+                    backgroundPosition: "center",
+                    width: "32px",
+                    height: "32px",
+                    borderRadius: "50%"
+                },
+                avatarTextStyleProps: { display: "none" }
             }
         }
     };
-};
+}
+
+// "data-customization-callback" value
+window.lcwCustomizationCallback = lcwCustomizationCallback;
+
+// init page theme + load initial widget on page load
+document.addEventListener("DOMContentLoaded", function () {
+    applyBrandTheme(currentAgentType);
+});
