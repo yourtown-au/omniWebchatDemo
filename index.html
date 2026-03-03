@@ -57,7 +57,6 @@
         </div>
     </div>
 
-    <!-- Main Content (hidden by default) -->
     <div class="content-wrapper" id="contentWrapper">
         <div class="container">
             <h1>🗨️ OmniWebchat Support</h1>
@@ -66,27 +65,27 @@
             <div class="environment-selector">
                 <h3>Choose Environment</h3>
                 <div class="environment-options">
-                    <div class="environment-option selected" onclick="selectEnvironment('dev')">
+                    <div class="environment-option selected" onclick="selectEnvironment('dev', this)">
                         <input type="radio" name="environment" id="env-dev" value="dev" checked>
-                        <label for="env-dev">
-                            <div class="environment-name">Development (DEV)</div>
-                            <div class="environment-description">Development environment for testing</div>
+                        <label for="env-dev" class="environment-label">
+                            <span class="environment-name">Development (DEV)</span>
+                            <span class="environment-description">Development environment for testing</span>
                         </label>
                     </div>
 
-                    <div class="environment-option" onclick="selectEnvironment('uat')">
+                    <div class="environment-option" onclick="selectEnvironment('uat', this)">
                         <input type="radio" name="environment" id="env-uat" value="uat">
-                        <label for="env-uat">
-                            <div class="environment-name">User Acceptance Testing (UAT)</div>
-                            <div class="environment-description">Pre-production testing environment</div>
+                        <label for="env-uat" class="environment-label">
+                            <span class="environment-name">User Acceptance Testing (UAT)</span>
+                            <span class="environment-description">Pre-production testing environment</span>
                         </label>
                     </div>
 
-                    <div class="environment-option" onclick="selectEnvironment('prd')">
+                    <div class="environment-option" onclick="selectEnvironment('prd', this)">
                         <input type="radio" name="environment" id="env-prd" value="prd">
-                        <label for="env-prd">
-                            <div class="environment-name">Production (PRD)</div>
-                            <div class="environment-description">Live production environment</div>
+                        <label for="env-prd" class="environment-label">
+                            <span class="environment-name">Production (PRD)</span>
+                            <span class="environment-description">Live production environment</span>
                         </label>
                     </div>
                 </div>
@@ -94,40 +93,64 @@
 
             <div class="agent-selector">
                 <h3>Choose Your Support Agent</h3>
-                <div class="agent-options">
-                    <div class="agent-option selected" onclick="selectAgent('default')">
-                        <input type="radio" name="agent" id="agent-default" value="default" checked>
-                        <label for="agent-default">
-                            <div class="agent-name">KHL Agent</div>
-                            <div class="agent-description">General support for all family-related queries and counselling</div>
-                        </label>
+
+                <div class="agent-options agent-columns">
+
+                    <!-- KHL -->
+                    <div class="agent-column">
+                        <div class="agent-column-title">KHL Agents</div>
+
+                        <div class="agent-option">
+                            <input type="radio" name="agent" id="agent-default" value="default">
+                            <label for="agent-default">
+                                <strong>KHL Agent</strong>
+                                <span class="agent-desc">General support for all family-related queries and counselling (Dee and Rhee's)</span>
+                            </label>
+                        </div>
+
+                        <div class="agent-option">
+                            <input type="radio" name="agent" id="agent-conversational" value="conversational">
+                            <label for="agent-conversational">
+                                <strong>Conversational - KHL</strong>
+                                <span class="agent-desc">KHL Conversational agent - POC4</span>
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="agent-option" onclick="selectAgent('specialist')">
-                        <input type="radio" name="agent" id="agent-specialist" value="specialist">
-                        <label for="agent-specialist">
-                            <div class="agent-name">Support Agent with Custom Instruction</div>
-                            <div class="agent-description">Experimental</div>
-                        </label>
+                    <!-- SUPPORT -->
+                    <div class="agent-column">
+                        <div class="agent-column-title">Support Agent</div>
+
+                        <div class="agent-option">
+                            <input type="radio" name="agent" id="agent-specialist" value="specialist">
+                            <label for="agent-specialist">
+                                <strong>Experimental</strong>
+                                <span class="agent-desc">Support Agent with Custom Instruction</span>
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="agent-option" onclick="selectAgent('survey')">
-                        <input type="radio" name="agent" id="agent-survey" value="survey">
-                        <label for="agent-survey">
-                            <div class="agent-name">Form Based</div>
-                            <div class="agent-description">
-                                POC 2 (Pre-conversation Survey). Allows visitors to answer a short survey before connecting.
-                            </div>
-                        </label>
+                    <!-- PARENTLINE -->
+                    <div class="agent-column">
+                        <div class="agent-column-title">Parentline</div>
+
+                        <div class="agent-option">
+                            <input type="radio" name="agent" id="agent-survey" value="survey">
+                            <label for="agent-survey">
+                                <strong>Form Based</strong>
+                                <span class="agent-desc">POC 2 form based survey before connecting.</span>
+                            </label>
+                        </div>
+
+                        <div class="agent-option">
+                            <input type="radio" name="agent" id="agent-parentline" value="parentline">
+                            <label for="agent-parentline">
+                                <strong>Conversational - Parentline</strong>
+                                <span class="agent-desc">Support for Parentline web counselling</span>
+                            </label>
+                        </div>
                     </div>
 
-                    <div class="agent-option" onclick="selectAgent('parentline')">
-                        <input type="radio" name="agent" id="agent-parentline" value="parentline">
-                        <label for="agent-parentline">
-                            <div class="agent-name">Conversational - Parentline</div>
-                            <div class="agent-description">Support for Parentline web counselling</div>
-                        </label>
-                    </div>
                 </div>
             </div>
 

@@ -52,6 +52,18 @@ const CHAT_CONFIGS = {
                 "data-org-url": "https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com",
                 "data-customization-callback": "lcwCustomizationCallback"
             }
+        },
+        conversational: {
+            id: "Microsoft_Omnichannel_LCWidget",
+            primarySrc: "https://oc-cdn-public-oce.azureedge.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            fallbackSrc: "https://ocprodpublicocegs.blob.core.windows.net/livechatwidget/scripts/LiveChatBootstrapper.js",
+            attributes: {
+                "data-app-id": "144797c1-0e81-4734-b3b3-3c667d2b8bd8",
+                "data-lcw-version": "prod",
+                "data-org-id": "025ebcf6-780b-f011-9aee-002248e344cd",
+                "data-org-url": "https://m-025ebcf6-780b-f011-9aee-002248e344cd.au.omnichannelengagementhub.com",
+                "data-customization-callback": "lcwCustomizationCallback"
+            }
         }
     },
 
@@ -74,9 +86,9 @@ const CHAT_CONFIGS = {
 };
 
 const AGENT_AVAILABILITY = {
-    dev: { default: true, specialist: true, survey: true, parentline: true },
-    uat: { default: true, specialist: false, survey: false, parentline: false },
-    prd: { default: false, specialist: false, survey: false, parentline: false }
+    dev: { default: true, specialist: true, survey: true, parentline: true, conversational: true },
+    uat: { default: true, specialist: false, survey: false, parentline: false, conversational: false },
+    prd: { default: false, specialist: false, survey: false, parentline: false, conversational: false }
 };
 
 // Per-agent BRANDING (widget logo/header/bot avatar) 
@@ -123,6 +135,17 @@ const BRANDING = {
         launcherLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/Parentline_P_Logo.png?csf=1&web=1&e=g8OjgS", // TODO: replace
         botAvatarUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_AIAgent%20(1).png?csf=1&web=1&e=SAqGwF", // TODO: replace
         headerLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/Parentline_P_Logo.png?csf=1&web=1&e=g8OjgS"
+    },
+    // Conversational - KHL
+    conversational: {
+        headerTitle: "Conversational - KHL",
+        brand: "#777c33",
+        brandHover: "#666a2b",
+        widgetBg: "#ffffff",
+
+        launcherLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc",
+        botAvatarUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc",
+        headerLogoUrl: "https://yourtownau.sharepoint.com/:i:/r/sites/FundraisingDev/Shared%20Documents/Test_WebChat/khl_webchat_logo.png?csf=1&web=1&e=N85bkc"
     }
 };
 
@@ -138,17 +161,30 @@ const BUTTON_SELECTORS = 'button[id*="lcw"], button[class*="lcw"]';
  * Maps default/specialist -> khl look, so your CSS can be: brand-khl, brand-parentline, brand-survey
  */
 function applyBrandTheme(agentType) {
-    const key = (agentType === "default" || agentType === "specialist") ? "khl" : agentType;
+
+    const khlAgents = ["default", "specialist", "conversational"];
+
+    const key = khlAgents.includes(agentType)
+        ? "khl"
+        : agentType;
 
     document.body.classList.remove(
         "brand-default",
         "brand-khl",
         "brand-parentline",
         "brand-survey",
-        "brand-specialist"
+        "brand-specialist",
+        "brand-conversational"
     );
 
     document.body.classList.add(`brand-${key}`);
+}
+
+function updateEnvBadges() {
+    const envText = (currentEnvironment || "dev").toUpperCase();
+    document.querySelectorAll("[data-env-badge]").forEach(el => {
+        el.textContent = envText;
+    });
 }
 
 function cleanupChatWidget() {
@@ -217,61 +253,68 @@ function isAgentAvailable(agentType) {
 }
 
 function updateAgentAvailability() {
-    document.querySelectorAll(".agent-option").forEach((option) => {
-        const agentType = option.querySelector('input[type="radio"]').value;
+
+    document.querySelectorAll(".agent-option").forEach((card) => {
+        const radio = card.querySelector('input[type="radio"]');
+        if (!radio) return;
+
+        const agentType = radio.value;
         const available = isAgentAvailable(agentType);
 
-        if (available) {
-            option.classList.remove("disabled");
-            option.onclick = function (evt) { selectAgent(agentType, evt); };
-        } else {
-            option.classList.add("disabled");
-            option.onclick = null;
+        radio.disabled = !available;
+        card.classList.toggle("disabled", !available);
+
+        if (!available && radio.checked) {
+            radio.checked = false;
         }
     });
 
-    // Auto-select first available in the environment
-    const firstAvailable = document.querySelector(".agent-option:not(.disabled)");
-    if (firstAvailable) {
-        const agentType = firstAvailable.querySelector('input[type="radio"]').value;
+    let selected = document.querySelector('input[name="agent"]:checked');
+    if (!selected) {
+        const firstAvailableRadio = Array.from(document.querySelectorAll('input[name="agent"]'))
+            .find(r => !r.disabled);
 
-        document.querySelectorAll(".agent-option").forEach((o) => o.classList.remove("selected"));
-        firstAvailable.classList.add("selected");
-        document.getElementById(`agent-${agentType}`).checked = true;
+        if (firstAvailableRadio) {
+            firstAvailableRadio.checked = true;
+            selected = firstAvailableRadio;
+        }
+    }
 
-        applyBrandTheme(agentType); 
-        loadChatWidget(agentType);  
+    if (selected) {
+        const agentType = selected.value;
+
+        document.querySelectorAll(".agent-option").forEach((c) => c.classList.remove("selected"));
+        selected.closest(".agent-option")?.classList.add("selected");
+
+        applyBrandTheme(agentType);
+        loadChatWidget(agentType);
     }
 }
 
-function selectEnvironment(environment, evt) {
+function selectEnvironment(environment, element) {
     document.querySelectorAll(".environment-option")
-        .forEach((o) => o.classList.remove("selected"));
+        .forEach(o => o.classList.remove("selected"));
 
-    if (evt && evt.currentTarget) {
-        evt.currentTarget.classList.add("selected");
-    }
+    if (element) element.classList.add("selected");
 
-    document.getElementById(`env-${environment}`).checked = true;
+    const radio = document.getElementById(`env-${environment}`);
+    if (radio) radio.checked = true;
+
     currentEnvironment = environment;
 
     document.querySelectorAll(".agent-option")
-        .forEach((o) => o.classList.remove("selected"));
+        .forEach(o => o.classList.remove("selected"));
 
     updateAgentAvailability();
 }
 
-function selectAgent(agentType, evt) {
-    if (!isAgentAvailable(agentType)) {
-        console.warn(`Agent '${agentType}' not available in '${currentEnvironment}'`);
-        return;
-    }
+function selectAgent(agentType, element) {
 
     document.querySelectorAll(".agent-option")
-        .forEach((o) => o.classList.remove("selected"));
+        .forEach(o => o.classList.remove("selected"));
 
-    if (evt && evt.currentTarget) {
-        evt.currentTarget.classList.add("selected");
+    if (element) {
+        element.classList.add("selected");
     }
 
     document.getElementById(`agent-${agentType}`).checked = true;
@@ -504,10 +547,27 @@ function lcwCustomizationCallback() {
     };
 }
 
+function wireAgentSelection() {
+    document.querySelectorAll('input[name="agent"]').forEach((radio) => {
+        radio.addEventListener("change", function () {
+            const agentType = this.value;
+
+            document.querySelectorAll(".agent-option").forEach((c) => c.classList.remove("selected"));
+            this.closest(".agent-option")?.classList.add("selected");
+
+            applyBrandTheme(agentType);
+            loadChatWidget(agentType);
+        });
+    });
+}
+
 // "data-customization-callback" value
 window.lcwCustomizationCallback = lcwCustomizationCallback;
 
 // init page theme + load initial widget on page load
 document.addEventListener("DOMContentLoaded", function () {
     applyBrandTheme(currentAgentType);
+    updateEnvBadges();
+    updateAgentAvailability();
+    wireAgentSelection();
 });
