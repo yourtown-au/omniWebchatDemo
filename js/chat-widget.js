@@ -319,7 +319,9 @@ function updateAgentAvailability() {
         radio.disabled = !available;
         card.classList.toggle("disabled", !available);
 
-        if (!available && radio.checked) radio.checked = false;
+        if (!available && radio.checked) {
+            radio.checked = false;
+        }
     });
 
     let selected = document.querySelector('input[name="agent"]:checked');
@@ -337,11 +339,14 @@ function updateAgentAvailability() {
 
     if (selected) {
         const agentType = selected.value;
+
         document.querySelectorAll(".agent-option").forEach((card) => {
             card.classList.remove("selected");
         });
         selected.closest(".agent-option")?.classList.add("selected");
+
         applyBrandTheme(agentType);
+        loadChatWidget(agentType);
     }
 }
 
@@ -349,6 +354,7 @@ function selectEnvironment(environment, element) {
     document.querySelectorAll(".environment-option").forEach((option) => {
         option.classList.remove("selected");
     });
+
     if (element) element.classList.add("selected");
 
     const radio = document.getElementById(`env-${environment}`);
@@ -358,9 +364,11 @@ function selectEnvironment(environment, element) {
     sessionStorage.setItem("selectedEnvironment", environment);
 
     updateEnvBadges();
+
     document.querySelectorAll(".agent-option").forEach((option) => {
         option.classList.remove("selected");
     });
+
     updateAgentAvailability();
 }
 
@@ -368,6 +376,7 @@ function wireAgentSelection() {
     document.querySelectorAll('input[name="agent"]').forEach((radio) => {
         radio.addEventListener("change", function () {
             const agentType = this.value;
+
             document.querySelectorAll(".agent-option").forEach((card) => {
                 card.classList.remove("selected");
             });
@@ -379,7 +388,24 @@ function wireAgentSelection() {
     });
 }
 
+function selectAgent(agentType, element) {
+    document.querySelectorAll(".agent-option").forEach((option) => {
+        option.classList.remove("selected");
+    });
+
+    if (element) {
+        element.classList.add("selected");
+    }
+
+    const radio = document.getElementById(`agent-${agentType}`);
+    if (radio) radio.checked = true;
+
+    applyBrandTheme(agentType);
+    loadChatWidget(agentType);
+}
+
 window.selectEnvironment = selectEnvironment;
+window.selectAgent = selectAgent;
 window.loadChatWidget = loadChatWidget;
 window.updateAgentAvailability = updateAgentAvailability;
 
