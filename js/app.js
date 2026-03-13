@@ -17,6 +17,11 @@ let visitorData = {
     sessionStartTime: new Date().toLocaleString()
 };
 
+// Prevent duplicate context registration
+let contextProviderSet = false;
+let contextRetryTimer = null;
+let lastSdkInstance = null;
+
 // Fetch IP + Location
 (async function initVisitorData() {
     try {
@@ -41,8 +46,9 @@ let visitorData = {
                 console.warn("Geolocation fetch failed:", geoError);
                 visitorData.location = "Location unavailable";
             }
+        } else {
+            visitorData.location = "Location unavailable";
         }
-
     } catch (error) {
         console.error("IP fetch failed:", error);
         visitorData.ip = "Unavailable";
@@ -89,10 +95,10 @@ function getBrowserInfo() {
 
 // Device Detection
 function getDeviceType() {
-    const ua = navigator.userAgentData;
+    const uaData = navigator.userAgentData;
 
-    if (ua && ua.platform) {
-        return ua.platform;
+    if (uaData && uaData.platform) {
+        return uaData.platform;
     }
 
     const fallbackUA = navigator.userAgent;
@@ -117,40 +123,110 @@ function updateVisitorDisplay() {
         sessionTime: visitorData.sessionStartTime
     };
 
-    Object.keys(map).forEach(id => {
+    Object.keys(map).forEach((id) => {
         const el = document.getElementById(id);
-        if (el) el.textContent = map[id] || "Loading...";
+        if (el) {
+            el.textContent = map[id] || "Loading...";
+        }
     });
 }
 
-// Full User Agent
-function getFullUserAgent() {
-    return navigator.userAgent;
-}
-
-// LiveChat Context Injection
-function setChatContext() {
-    const ctx = {
+// Build chat context payload
+function buildChatContext() {
+    return {
         VisitorIP: { value: visitorData.ip || "unavailable", isDisplayable: true },
         Referral: { value: referrer, isDisplayable: true },
         DeviceType: { value: visitorData.device || "Unknown", isDisplayable: true },
-        UserAgent: { value: getFullUserAgent(), isDisplayable: true },
+        UserAgent: { value: navigator.userAgent, isDisplayable: true },
         Location: { value: visitorData.location || "unavailable", isDisplayable: true },
         Coordinates: { value: visitorData.coordinates || "unavailable", isDisplayable: true }
     };
-
-    if (window.Microsoft?.Omnichannel?.LiveChatWidget?.SDK?.setContextProvider) {
-        Microsoft.Omnichannel.LiveChatWidget.SDK.setContextProvider(() => ctx);
-        console.log("Context set:", ctx);
-    } else {
-        console.warn("LiveChat SDK not ready.");
-    }
 }
 
-// Listen for LCW ready event
+// Safe context setter
+function setChatContextWhenReady() {
+    if (contextRetryTimer) {
+        clearInterval(contextRetryTimer);
+        contextRetryTimer = null;
+    }
+
+    let tries = 0;
+    const maxTries = 20;
+
+    contextRetryTimer = setInterval(() => {
+        tries++;
+
+        const sdk = window.Microsoft?.Omnichannel?.LiveChatWidget?.SDK;
+
+        if (!sdk || typeof sdk.setContextProvider !== "function") {
+            if (tries >= maxTries) {
+                clearInterval(contextRetryTimer);
+                contextRetryTimer = null;
+                console.warn("LiveChat SDK not ready after retries.");
+            }
+            return;
+        }
+
+        if (sdk !== lastSdkInstance) {
+            contextProviderSet = false;
+            lastSdkInstance = sdk;
+        }
+
+        if (contextProviderSet) {
+            clearInterval(contextRetryTimer);
+            contextRetryTimer = null;
+            console.log("Context provider already set for current SDK.");
+            return;
+        }
+
+        try {
+            const ctx = buildChatContext();
+            sdk.setContextProvider(() => ctx);
+
+            contextProviderSet = true;
+            clearInterval(contextRetryTimer);
+            contextRetryTimer = null;
+
+            console.log("Context set:", ctx);
+        } catch (e) {
+            console.warn("SDK exists but not ready yet, retrying...", e);
+
+            if (tries >= maxTries) {
+                clearInterval(contextRetryTimer);
+                contextRetryTimer = null;
+                console.warn("Unable to set chat context after retries.");
+            }
+        }
+    }, 300);
+}
+
+function resetChatContextRegistration() {
+    contextProviderSet = false;
+    lastSdkInstance = null;
+
+    if (contextRetryTimer) {
+        clearInterval(contextRetryTimer);
+        contextRetryTimer = null;
+    }
+
+    console.log("Chat context registration state reset.");
+}
+
+window.resetChatContextRegistration = resetChatContextRegistration;
+
+// Re-register context whenever LCW signals ready
 window.addEventListener("lcw:ready", function () {
-    console.log("Widget ready event received.");
-    setChatContext();
+    console.log("lcw:ready received");
+    contextProviderSet = false;
+    setChatContextWhenReady();
+});
+
+// Widget gets recreated/opened
+window.addEventListener("lcw:startChat", function () {
+    if (!contextProviderSet) {
+        console.log("lcw:startChat received - retrying context set");
+        setChatContextWhenReady();
+    }
 });
 
 // DOM Ready
@@ -158,5 +234,6 @@ document.addEventListener("DOMContentLoaded", function () {
     if (typeof initAuth === "function") {
         initAuth();
     }
+
     updateVisitorDisplay();
 });
