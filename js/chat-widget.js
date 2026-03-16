@@ -653,7 +653,10 @@ const QueueLock = (() => {
         if (!iframe || !overlay) return;
 
         const rect = iframe.getBoundingClientRect();
-        if (rect.width < 10 || rect.height < 10) return;
+        if (rect.width < 200 || rect.height < 200) {
+            overlay.style.display = "none";
+            return;
+        }
 
         const composerBlockHeight = 96;
 
@@ -760,7 +763,10 @@ function persistQueueState(isLocked) {
 
 function restoreQueueStateIfNeeded() {
     const shouldLock = sessionStorage.getItem("lcwQueueLocked") === "true";
-    if (!shouldLock) return;
+    const chatOpen = sessionStorage.getItem("chatOpen") === "true";
+    const selectedAgent = sessionStorage.getItem("selectedAgent");
+
+    if (!shouldLock || !chatOpen || !selectedAgent) return;
 
     setTimeout(() => {
         QueueLock.lock();
@@ -773,19 +779,30 @@ window.addEventListener("lcw:ready", () => {
 
 window.addEventListener("lcw:onMessageReceived", (e) => {
     const detail = e?.detail || {};
-    const tags = (e?.tags || detail?.tags || detail?.channelData?.tags || []).map((tag) =>
-        String(tag).toLowerCase()
+    const tags = (e?.tags || detail?.tags || detail?.channelData?.tags || []).map((t) =>
+        String(t).toLowerCase()
     );
     const msgType = String(e?.msgType || detail?.messageType || "").toLowerCase();
     const text = String(detail?.text || "").toLowerCase();
 
-    if (
-        tags.includes("queueposition") ||
-        tags.includes("customerqueueposition") ||
-        tags.includes("customerqueuepositionnext")
-    ) {
-        persistQueueState(true);
-        QueueLock.lock();
+    const isConversationEndedOrDisconnected =
+        tags.includes("supervisorforceclosedconversation") ||
+        tags.includes("chatdisconnected") ||
+        tags.includes("conversationended") ||
+        tags.includes("sessionended") ||
+        text.includes("supervisor force closed the session") ||
+        text.includes("customer left chat") ||
+        text.includes("chat disconnected") ||
+        text.includes("session ended") ||
+        text.includes("conversation closed") ||
+        text.includes("connection lost") ||
+        text.includes("reconnecting failed");
+
+    if (isConversationEndedOrDisconnected) {
+        persistQueueState(false);
+        sessionStorage.removeItem("selectedAgent");
+        sessionStorage.removeItem("chatOpen");
+        QueueLock.unlock(true);
         return;
     }
 
@@ -795,11 +812,24 @@ window.addEventListener("lcw:onMessageReceived", (e) => {
         return;
     }
 
+    const isWaitingState =
+        tags.includes("queueposition") ||
+        tags.includes("customerqueueposition") ||
+        tags.includes("customerqueuepositionnext");
+
+    if (isWaitingState) {
+        persistQueueState(true);
+        QueueLock.lock();
+        return;
+    }
+
     const counsellorLeft =
         msgType === "system" &&
-        (text.includes("left chat") ||
+        (
+            text.includes("left chat") ||
             text.includes("left the session") ||
-            text.includes("counsellor left")) &&
+            text.includes("counsellor left")
+        ) &&
         !text.includes("ai agent") &&
         !text.includes("copilot agent") &&
         !text.includes("__agent__") &&
@@ -810,13 +840,14 @@ window.addEventListener("lcw:onMessageReceived", (e) => {
     if (counsellorLeft) {
         persistQueueState(true);
         QueueLock.lock();
-        return;
     }
+});
+window.addEventListener("lcw:onMinimize", () => {
+    QueueLock.unlock(false);
+});
 
-    if (tags.includes("supervisorforceclosedconversation")) {
-        persistQueueState(false);
-        QueueLock.unlock(true);
-    }
+window.addEventListener("lcw:onMaximize", () => {
+    restoreQueueStateIfNeeded();
 });
 
 window.addEventListener("lcw:closeChat", () => {
